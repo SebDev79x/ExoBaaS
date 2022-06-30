@@ -1,0 +1,9 @@
+npm install @react-navigation/bottom-tabs
+npm install @react-navigation/native-stack
+npm i formik-yup
+npm install react-native-select-dropdown
+npm install react-native-chart-kit
+yarn add react-native-reanimated
+expo install react-native-gesture-handler
+ /*  let tempDate = new Date(birthday)
+  let formatedDate = tempDate.getDate() + '/' + (tempDate.getMonth()) + '/' + (tempDate.getFullYear()) */
