@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "829790075115",
+    "project_id": "exobaas",
+    "storage_bucket": "exobaas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829790075115:android:17cc2007387dac93f926ae",
+        "android_client_info": {
+          "package_name": "fr.sample.exobaasapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829790075115-c9pst6rncub2u1cftmbgq3jeemu5el2v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgfbs2xTm1KpazNopjh6_HLgowLgQJ67s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829790075115-c9pst6rncub2u1cftmbgq3jeemu5el2v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

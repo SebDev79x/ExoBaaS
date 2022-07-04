@@ -3,11 +3,15 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import SelectDropdown from 'react-native-select-dropdown'
+import firebase from '../../database/firebaseDb';
 
-const expensesMisc = ["Facture", "Logement", "Transport", "Alimentaire", "Maz bonne", "YouPorn", "Foncier", "La chaîne du p'tit coquin", "Jackie et Michel"]
+import superData from '../functions/getdata'
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 
+// Tableau des types de dépenses
+const expensesMisc = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Autres dépenses"]
+// Objet YUP
 const expensesValidationSchema = yup.object().shape({
-
     firstname: yup
         .string()
         .min(3, ({ min }) => `Minimum ${min} caractères`)
@@ -26,8 +30,16 @@ const expensesValidationSchema = yup.object().shape({
             /^/,
             "Nom invalide"
         ),
+
     category: yup
         .string(),
+    amount: yup
+        .string()
+        .required('Requis')
+        .matches(
+            /^\d+(\,\d{1,2})?/,
+            "Invalide"
+        ),
     comment: yup
         .string()
         .min(5, ({ min }) => `Minimum ${min} caractères`)
@@ -39,20 +51,63 @@ const expensesValidationSchema = yup.object().shape({
         )
 });
 
-
+// Mon composant principal
 const AddExpenses = ({ navigation }) => {
+
+    // State du tableau global des dépenses
+    const [myExpensesArray, setMyExpensesArray] = useState('')
+
+    // State de la catégorie
     const [category, setCategory] = useState("Aucune catégorie");
+    /*  const [firstnameX, setFirstname] = useState('')
+    const [lastnameX, setLastname] = useState('') 
+    const [amountX, setAmount] = useState('')
+    const [commentX, setComment] = useState('') */
+
+    // Fonction getData => data from database
+   /* const getData = async () => {
+        try {
+            let result = await superData.then((e) => e)
+                .catch((err) => err)
+            console.log(result, "result");
+            setMyExpensesArray(result)
+        } catch (err) {
+            console.log("erreur survenue avec GETDATA");
+        }
+    }
+ useEffect(()=>{
+    getData()
+console.log("myExpensesArray après submit",myExpensesArray);
+},[]) */
+    const dbRef = firebase.firestore().collection('expenses');
+    const createExpense = async (firstname, lastname, category, amount, comment) => {
+        await dbRef
+            .add({
+                firstname: firstname,
+                lastname: lastname,
+                category: category,
+                amount: amount,
+                comment: comment
+            })
+            .then((e) => console.log("e", e))
+            .catch((err) => console.log("une erreur est survenue", err))
+    }
     return (
         <View>
             <Formik
-                initialValues={{ firstname: '', lastname: '', category: '', comment: '' }}
+                initialValues={{ firstname: '', lastname: '', category: '', amount: '', comment: '' }}
                 validateOnMount={true}
                 onSubmit={(data) => {
                     data.category = category
-                    console.log(data);
-                    navigation.navigate('Accueil', { data })
-                }
-                }
+
+                    /*  setLastname(data.lastname)
+                     setAmount(data.amount)
+                     setComment(data.comment) */
+                    createExpense(data.firstname, data.lastname, category, data.amount, data.comment)
+                 
+                    /*                     navigation.navigate('Ecran test', { data })
+                     */
+                }}
                 validationSchema={expensesValidationSchema}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, touched, isValid, errors }) => (
@@ -106,7 +161,6 @@ const AddExpenses = ({ navigation }) => {
                                 data={expensesMisc}
                                 value={values.category}
                                 onSelect={(selectedItem, index) => {
-                                    console.log(selectedItem, index);
                                     setCategory(selectedItem)
                                 }}
                             />
@@ -115,6 +169,30 @@ const AddExpenses = ({ navigation }) => {
                             <View style={{ height: 30 }}><Text>ESPACE</Text></View>
 
                         </View>
+
+
+                        <View>
+                            <View style={styles.center}>
+                                <Text style={styles.label}>Montant : </Text>
+                            </View>
+                            <View>
+                                <TextInput
+                                    style={styles.input}
+                                    mode="flat"
+                                    placeholder="Montant"
+                                    placeholderTextColor={'grey'}
+                                    onChangeText={handleChange('amount')}
+                                    onBlur={handleBlur('amount')}
+                                    value={values.amount}
+                                />
+                            </View>
+                            {(touched.amount && errors.amount) && <Text style={styles.errors}>{errors.amount}</Text>}
+                        </View>
+
+
+
+
+
                         <View>
                             <View style={styles.center}>
                                 <Text style={styles.label}>Commentaire</Text>
@@ -145,6 +223,41 @@ const AddExpenses = ({ navigation }) => {
                     </View>
                 )}
             </Formik>
+            <ScrollView>
+                <View style={styles.center2}>
+                    {/* <TouchableOpacity
+                                style={styles.btnPass}
+                                onPress={()=>{
+                                    youpi()
+                                }} title="Submit">
+                                <Text style={styles.textPass}>Afficher</Text>
+                            </TouchableOpacity> */}
+                </View>
+
+                <View>
+                    <FlatList
+                        data={myExpensesArray}
+
+                        renderItem={({ item }) =>
+                            <View>
+                                <View>
+                                    <Text>______________________</Text>
+
+                                    <Text>______________________</Text>
+                                </View>
+                                <View style={styles.alignRow}>
+                                    <Text>Montant : {item.amount}</Text>
+                                    <Text>Cat : {item.category}</Text>
+                                </View>
+                                <View style={styles.alignColumn}>
+                                    <Text>Commentaire : {item.comment}</Text>
+                                    <Text>Opération N° : {item.lastname}</Text>
+                                </View>
+                            </View>
+                        }
+                    />
+                </View>
+            </ScrollView>
         </View>
     );
 }
@@ -232,18 +345,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20
     },
-    /* end :{
-    alignItems:'flex-end'
-    } */
-    /*   pic: {
-    width: 180,
-    height: 180,
-    resizeMode: 'contain'
-    },
-    picContainer: {
-    flex: .4,
-    
-    }, */
+
     dropdown3BtnStyle: {
         height: 50,
         backgroundColor: '#68A7AD',

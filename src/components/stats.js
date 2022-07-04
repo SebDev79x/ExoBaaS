@@ -5,6 +5,7 @@ import {
     LineChart
 } from 'react-native-chart-kit'
 import Data from '../../file.json'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // SOMME des dépenses
 const totalCountExpenses = (json) => {
@@ -29,81 +30,90 @@ const datesExpenses = (json) => {
 // CONST Dates Dépenses
 const realDatesExpenses = datesExpenses(Data)
 // Tri des dates , de la + ancienne à la plus récente
-const sortedDatesExpenses = realDatesExpenses[0].sort((a,b)=>a>b)
+const sortedDatesExpenses = realDatesExpenses[0].sort((a, b) => a > b)
 // Formatage des dates
-const frSortedDatesExpenses = sortedDatesExpenses.map((e)=>{
-e = new Date(e)    
-return e.toLocaleDateString("fr")
+const frSortedDatesExpenses = sortedDatesExpenses.map((e) => {
+    e = new Date(e)
+    return e.toLocaleDateString("fr")
 })
 // TABLEAU DEPENSES/ EXPENSES
-const objectsExp = Data.map((e)=>{
-return e.expenses
+const objectsExp = Data.map((e) => {
+    return e.expenses
 })
 // TABLEAU REVENUS/ INCOMES
-const objectsInc = Data.map((e)=>{
+const objectsInc = Data.map((e) => {
     return e.incomes
-    })
-console.log("obj",objectsExp[0],objectsInc[0]);
-// DEPENSES => TRI DES OBJETS PAR DATE  
-const objAreSortedExp = objectsExp[0].sort((a,b)=>a.date>b.date)
+})
+/* console.log("obj",objectsExp[0],objectsInc[0]);
+ */// DEPENSES => TRI DES OBJETS PAR DATE  
+const objAreSortedExp = objectsExp[0].sort((a, b) => a.date > b.date)
 // DEPENSES => TABLEAU DES DATES TRIEES & FORMATEES
-const datesAreSortedAndFormattedForExpenses = objAreSortedExp.map((e)=>{
+const datesAreSortedAndFormattedForExpenses = objAreSortedExp.map((e) => {
     return e.date.substring(0, 10)
 })
-const datesExpAreSortedAndInFrFormat = datesAreSortedAndFormattedForExpenses.map((e)=>{
+// DEPENSES => TABLEAU DES DATES TRIEES & FORMATEES EN FR
+const datesExpAreSortedAndInFrFormat = datesAreSortedAndFormattedForExpenses.map((e) => {
     e = new Date(e)
     return e.toLocaleDateString('fr-FR')
 })
-console.log(datesExpAreSortedAndInFrFormat,"test dates dépenses");
 /* console.log(datesAreSortedAndFormattedForExpenses,"datesAreSortedAndFormattedForExpenses")
  */// DEPENSES => TABLEAU DES DEPENSES EN FONCTION DES DATES TRIEES
-const expensesAreWellSorted = objAreSortedExp.map((e)=>{
+const expensesAreWellSorted = objAreSortedExp.map((e) => {
     return +(e.amount.replace(/[€,]/g, ''))
 })
 
 
 // REVENUS => TRI DES OBJETS PAR DATE
-const objAreSortedInc = objectsInc[0].sort((a,b)=>a.date>b.date)
+const objAreSortedInc = objectsInc[0].sort((a, b) => a.date > b.date)
 // REVENUS => TABLEAU DES DATES TRIEES & FORMATEES
-const datesAreSortedAndFormattedForIncomes = objAreSortedInc.map((e)=>{
+const datesAreSortedAndFormattedForIncomes = objAreSortedInc.map((e) => {
     return e.date.substring(0, 10)
 })
-const datesIncAreSortedAndInFrFormat = datesAreSortedAndFormattedForIncomes.map((e)=>{
+// REVENUS => TABLEAU DES DATES TRIEES & FORMATEES EN FR
+const datesIncAreSortedAndInFrFormat = datesAreSortedAndFormattedForIncomes.map((e) => {
     e = new Date(e)
     return e.toLocaleDateString('fr-FR')
 })
-console.log(datesIncAreSortedAndInFrFormat,"test dates revenus");
 // REVENUS => TABLEAU DES REVENUS EN FONCTION DES DATES TRIEES
-const incomesAreWellSorted = objAreSortedInc.map((e)=>{
+const incomesAreWellSorted = objAreSortedInc.map((e) => {
     return +(e.amount.replace(/[€,]/g, ''))
 })
-console.log(incomesAreWellSorted,"expensesAreWellSorted")
 
+// DERNIERES OPERATIONS 1 POUR DEPENSES, 1 POUR REVENUS
+const lastExpense = objAreSortedExp[objAreSortedExp.length - 1]
+const lastIncome = objAreSortedInc[objAreSortedInc.length - 1]
+// Initialize new array
+const arrayLastOps = []
+// SET Last Ops in new array
+const pushLastOpsInArray = (array) => {
+    array.push(lastExpense)
+    array.push(lastIncome)
+    return array
+}
+// SET Last Ops in arrayLastOps
+pushLastOpsInArray(arrayLastOps)
+
+console.log("arrayLastOps", arrayLastOps);
+const StoreLastOps = async (array) => {
+    try {
+        await AsyncStorage.setItem('lastOps', JSON.stringify(array))
+
+    } catch (e) {
+        console.log(e);
+    }
+}
+StoreLastOps(arrayLastOps)
+// EXECUTION DE LA METHODE
 
 // Nombre d'objets dans mon tableau de dépenses || Output : 5
-const countOcc = objectsExp[0].reduce((acc,val)=> acc+1,0)
-/* console.log("countOcc",countOcc);
- */// Somme des dépenses
-const sumExpenses = objectsExp[0].reduce((acc,exp)=>acc + exp.amount,0)
-/* console.log("sumExpenses",sumExpenses);
- */// Array of dates (format de base)
-const arrayOfDates = objectsExp[0].reduce((acc,exp)=>[...acc, exp.date],[])
-/* console.log("arrayOfDates",arrayOfDates);
- */// Array of dates au format YYYY/MM/DD
-const arrayOfMiniDates = objectsExp[0].reduce((acc,exp)=>[...acc, exp.date],[]).map((e)=>e.substring(0, 10))
-/* console.log("arrayOfMiniDates",arrayOfMiniDates);
- */
+const countOcc = objectsExp[0].reduce((acc, val) => acc + 1, 0)
+// Somme des dépenses
+const sumExpenses = objectsExp[0].reduce((acc, exp) => acc + exp.amount, 0)
+/// Array of dates (format de base)
+const arrayOfDates = objectsExp[0].reduce((acc, exp) => [...acc, exp.date], [])
+// Array of dates au format YYYY/MM/DD
+const arrayOfMiniDates = objectsExp[0].reduce((acc, exp) => [...acc, exp.date], []).map((e) => e.substring(0, 10))
 
-// JUste un seul tableau
-/* const flatten = (acc, item)=>{
-    if(Array.isArray(item)){
-        return [...acc, ...item.reduce(flatten,[])]
-    }
-    return [...acc,item]
-}
-
-let result = objects[0].reduce(flatten,[])
-console.log(result,"result"); */
 // FIN
 
 // Méthode Dates Revenus
@@ -117,11 +127,11 @@ const realDatesIncomes = datesIncomes(Data)
 //https://github.com/indiespirit/react-native-chart-kit/issues/21 NORMAL A PRIORIS
 const Stats = ({ navigation }) => {
 
-// Voir pour les revenus et correler dates avec dépenses/revenus
+    // Voir pour les revenus et correler dates avec dépenses/revenus
     const dataExpenses = {
         labels: datesExpAreSortedAndInFrFormat,
         datasets: [{
-            data:expensesAreWellSorted
+            data: expensesAreWellSorted
         }],
     };
 
@@ -207,10 +217,7 @@ const styles = StyleSheet.create({
         height: 200,
         resizeMode: 'contain'
     },
-    /*   btns: {
-          justifyContent: 'center',
-          alignItems: 'center',
-      }, */
+
 
 
     btnConnection: {

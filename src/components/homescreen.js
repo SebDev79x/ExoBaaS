@@ -1,50 +1,85 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const HomeScreen = ({ navigation }) => {
     const [mySolde, setSolde] = useState('')
+    const [lastOps, setLastOps] = useState([])
 
+console.log("mysolde",mySolde);
     const GetData = async () => {
-        console.log("youpi", mySolde)
-
         try {
-            const value = await AsyncStorage.getItem('solde')
-            if (value !== null) {
+             await AsyncStorage.getItem('solde').then(element =>setSolde(element))
                 // We have data!!
-                console.log(value, "ouais");
-                setSolde(value);
-            }
+            
+        } catch (err) {
+            // error reading value
+            console.log("erreur survenue",err);
+        }
+    }
+    const GetLastOperations = async () => {
+        try {
+            await AsyncStorage.getItem('lastOps').then(element => {
+                setLastOps(JSON.parse(element));
+                // or code.toString().. depends on what you stored
+            })
+
+
         } catch (e) {
             // error reading value
         }
     }
 
-
     return (
+
         <View style={styles.container}>
             <View style={styles.alignAsARow}>
-                
-                <TouchableOpacity
-                    onPress={() => GetData()}
+                <View>
+                    <TouchableOpacity
+                        onPress={() => GetData()}
+                        style={styles.btnSolde}
 
-                >
-                    <Text >Mon solde : {mySolde}</Text>
-                </TouchableOpacity>
-                <Text>SOLDE </Text>
-                <Text> || </Text>
-                <Text>DERNIERES OPERATIONS</Text>
+                    >
+                        <Text style={styles.textSolde}>Mon solde :</Text>
+                    </TouchableOpacity>
+                    <Text >{mySolde}</Text>
 
+                </View>
+                <View>
+                    <TouchableOpacity
+                        onPress={() => GetLastOperations()}
+                        style={styles.btnLastOps}
+
+                    >
+                        <Text style={styles.textLastOps}>Dernières opérations :</Text>
+                    </TouchableOpacity>
+                    
+                </View>
+
+            </View>
+            <View>
+            <FlatList
+                        data={lastOps}
+                        renderItem={({ item }) =>
+                            <View>
+
+                                <Text>Opération en date du {item.date}</Text>
+                                <Text>Montant : {item.amount}</Text>
+                                <Text>Catégorie : {item.category}</Text>
+                                <Text>Commentaire : {item.comments}</Text>
+                                <Text>_______________________</Text>
+                            </View>
+
+
+                        }
+                    />
             </View>
             <View style={styles.btns}>
                 <View>
-
                     <TouchableOpacity
                         style={styles.btnConnection}
                         onPress={() => navigation.navigate('Ajout Revenus')}
-
                     >
                         <Text style={styles.textConnection}>Ajout REVENUS</Text>
                     </TouchableOpacity>
@@ -126,7 +161,35 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: 18
-    }
+    },
+    btnSolde: {
+        padding: 10,
+
+        backgroundColor: '#a7b3db',
+        padding: 10,
+        width: 150,
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    textSolde: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 18
+    },
+    btnLastOps: {
+        padding: 10,
+
+        backgroundColor: '#a7dbcf',
+        padding: 10,
+        width: 150,
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    textLastOps: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 18
+    },
 });
 
 export default HomeScreen;

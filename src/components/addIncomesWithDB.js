@@ -11,7 +11,7 @@ const incomesValidationSchema = yup.object().shape({
     firstname: yup
         .string()
         .min(3, ({ min }) => `Minimum ${min} caractères`)
-        .max(10, ({ max }) => `Minimum ${max} caractères`)
+        .max(10, ({ max }) => `Maximum ${max} caractères`)
         .required('Requis')
         .matches(
             /^/,
@@ -20,7 +20,7 @@ const incomesValidationSchema = yup.object().shape({
     lastname: yup
         .string()
         .min(3, ({ min }) => `Minimum ${min} caractères`)
-        .max(10, ({ max }) => `Minimum ${max} caractères`)
+        .max(10, ({ max }) => `Maximum ${max} caractères`)
         .required('Requis')
         .matches(
             /^/,
@@ -28,10 +28,17 @@ const incomesValidationSchema = yup.object().shape({
         ),
     category: yup
         .string(),
+    amount: yup
+        .string()
+        .required('Requis')
+        .matches(
+            /^\d+(\,\d{1,2})?/,
+            "Invalide"
+        ),
     comment: yup
         .string()
         .min(5, ({ min }) => `Minimum ${min} caractères`)
-        .max(50, ({ max }) => `Minimum ${max} caractères`)
+        .max(50, ({ max }) => `Maximum ${max} caractères`)
         .required('Requis')
         .matches(
             /^/,
@@ -46,11 +53,10 @@ const AddIncomes = ({ navigation }) => {
     return (
         <View>
             <Formik
-                initialValues={{ firstname: '', lastname: '', category: '', comment: '' }}
+                initialValues={{ firstname: '', lastname: '', category: '', amount: '', comment: '' }}
                 validateOnMount={true}
                 onSubmit={(data) => {
                     data.category = category
-                    console.log(data, "data");
                     navigation.navigate('Accueil', { data })
 
                 }
@@ -117,6 +123,30 @@ const AddIncomes = ({ navigation }) => {
                             <View style={{ height: 30 }}><Text>ESPACE</Text></View>
 
                         </View>
+
+
+
+                        <View>
+                            <View style={styles.center}>
+                                <Text style={styles.label}>Montant : </Text>
+                            </View>
+                            <View>
+                                <TextInput
+                                    style={styles.input}
+                                    mode="flat"
+                                    placeholder="Montant"
+                                    placeholderTextColor={'grey'}
+                                    onChangeText={handleChange('amount')}
+                                    onBlur={handleBlur('amount')}
+                                    value={values.amount}
+                                />
+                            </View>
+                            {(touched.amount && errors.amount) && <Text style={styles.errors}>{errors.amount}</Text>}
+                        </View>
+
+
+
+
                         <View>
                             <View style={styles.center}>
                                 <Text style={styles.label}>Commentaire</Text>
@@ -234,18 +264,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20
     },
-    /* end :{
-    alignItems:'flex-end'
-    } */
-    /*   pic: {
-    width: 180,
-    height: 180,
-    resizeMode: 'contain'
-    },
-    picContainer: {
-    flex: .4,
-    
-    }, */
     dropdown3BtnStyle: {
         height: 50,
         backgroundColor: '#68A7AD',

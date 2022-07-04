@@ -1,49 +1,11 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, SafeAreaView, View, FlatList, Button, Image, TouchableOpacity } from 'react-native';
 import Data from '../../file.json'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const totalCountIncomes = (json) => {
-    return Number(json.map((e) => e.incomes
-        .map((e) => +(e.amount
-            .replace(/[€,]/g, '')))
-        .reduce((a, b) => {
-            return a + b
-        }, 0)))
-}
-
-const totalCountExpenses = (json) => {
-    return Number(json.map((e) => e.expenses
-        .map((e) => +(e.amount
-            .replace(/[€,]/g, '')))
-        .reduce((a, b) => {
-            return a + b
-        }, 0)))
-}
-const Balance = (a, b) => {
-    let total = a - b
-    return total.toFixed(2)
-}
-const myBalance = Balance(totalCountIncomes(Data), totalCountExpenses(Data));
-const StoreData = async (el) => {
-    try {
-        await AsyncStorage.setItem('solde', el)
-
-    } catch (e) {
-        console.log(e);
-    }
-}
-StoreData(myBalance)
 
 const Account = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
-
-            {/* <View><Text>Solde de mon compte : {myBalance} + test</Text>
-                <Text></Text>
-
-            </View> */}
             <FlatList
                 data={Data}
                 keyExtractor={(item) => item._id}
@@ -68,7 +30,7 @@ const Account = ({ navigation }) => {
                             renderItem={({ item: item2 }) =>
                                 <View>
                                     <View>
-                                    <Text>______________________</Text>
+                                        <Text>______________________</Text>
 
                                         <Text>______________________</Text>
                                     </View>
@@ -76,16 +38,11 @@ const Account = ({ navigation }) => {
                                         <Text>Date : {item2.date}</Text>
                                         <Text>Montant : {item2.amount}</Text>
                                         <Text>Cat : {item2.category}</Text>
-
                                     </View>
                                     <View style={styles.alignColumn}>
                                         <Text>Commentaire : {item2.comments}</Text>
                                         <Text>Opération N° : {item2._id_income}</Text>
-
                                     </View>
-
-
-
                                 </View>
                             }
                         />
