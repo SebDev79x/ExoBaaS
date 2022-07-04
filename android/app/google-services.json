@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "829790075115",
-    "project_id": "exobaas",
-    "storage_bucket": "exobaas.appspot.com"
+    "project_number": "1095075012837",
+    "project_id": "exobaas-c0521",
+    "storage_bucket": "exobaas-c0521.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:829790075115:android:17cc2007387dac93f926ae",
+        "mobilesdk_app_id": "1:1095075012837:android:f8a02761b1d20d0c6fb40c",
         "android_client_info": {
-          "package_name": "fr.sample.exobaasapp"
+          "package_name": "fr.sebdev.ExoBAAS"
         }
       },
       "oauth_client": [
         {
-          "client_id": "829790075115-c9pst6rncub2u1cftmbgq3jeemu5el2v.apps.googleusercontent.com",
+          "client_id": "1095075012837-jmcrl64hjgn33a2rhl6530aasq6rtpl4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCgfbs2xTm1KpazNopjh6_HLgowLgQJ67s"
+          "current_key": "AIzaSyADbG5aQitVquim-Pif6R710gRcb8cuSg0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "829790075115-c9pst6rncub2u1cftmbgq3jeemu5el2v.apps.googleusercontent.com",
+              "client_id": "1095075012837-jmcrl64hjgn33a2rhl6530aasq6rtpl4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -1,4 +1,4 @@
-import firebase from 'firebase/compat/app';
+/* import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 const firebaseConfig = {
     apiKey: "AIzaSyCgfbs2xTm1KpazNopjh6_HLgowLgQJ67s",
@@ -14,7 +14,7 @@ const firebaseConfig = {
 // https://firebase.google.com/docs/cli
 firebase.initializeApp(firebaseConfig);
 firebase.firestore();
-export default firebase;
+export default firebase; */
 /* import  {initializeApp}  from "firebase/app";
 import  {getFirestore}  from "firebase/firestore";
 import 'firebase/compat/firestore';

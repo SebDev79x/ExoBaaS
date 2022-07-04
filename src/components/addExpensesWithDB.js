@@ -3,13 +3,20 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import SelectDropdown from 'react-native-select-dropdown'
-import firebase from '../../database/firebaseDb';
+/* import firebase from '../../database/firebaseDb';*/
 
-import superData from '../functions/getdata'
+/* good import superData from '../functions/getdata' 
+ */// Using DB reference
+/*  import getData from '../functions/getdata.js'
+ */import { db } from '../../database/config'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 
 // Tableau des types de dépenses
-const expensesMisc = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Autres dépenses"]
+const expenseMisc = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Autres dépenses"]
+// Tableau des types de transactions
+/* const transactionType = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Autres dépenses"]
+ */
 // Objet YUP
 const expensesValidationSchema = yup.object().shape({
     firstname: yup
@@ -50,13 +57,15 @@ const expensesValidationSchema = yup.object().shape({
             "Commentaire invalide"
         )
 });
+// TEST NEW METHOD
+
 
 // Mon composant principal
 const AddExpenses = ({ navigation }) => {
 
     // State du tableau global des dépenses
-    const [myExpensesArray, setMyExpensesArray] = useState('')
-
+    /*     const [myExpensesArray, setMyExpensesArray] = useState('')
+     */
     // State de la catégorie
     const [category, setCategory] = useState("Aucune catégorie");
     /*  const [firstnameX, setFirstname] = useState('')
@@ -65,46 +74,99 @@ const AddExpenses = ({ navigation }) => {
     const [commentX, setComment] = useState('') */
 
     // Fonction getData => data from database
-   /* const getData = async () => {
-        try {
-            let result = await superData.then((e) => e)
-                .catch((err) => err)
-            console.log(result, "result");
-            setMyExpensesArray(result)
-        } catch (err) {
-            console.log("erreur survenue avec GETDATA");
+    /*    const getData = async ("expenses",) => {
+            try {
+                let result = await superData.then((e) => e)
+                    .catch((err) => err)
+                console.log(result, "result");
+                setMyExpensesArray(result)
+            } catch (err) {
+                console.log("erreur survenue avec GETDATA");
+            }
         }
+        */
+    /*  useEffect(()=>{
+        getData()
+    console.log("myExpensesArray après submit",myExpensesArray);
+    },[])  */
+    /* GOOOOOOOOD   const dbRef = firebase.firestore().collection('expenses');
+       const createExpense = async (firstnameParam, lastnameParam, categoryParam, amountParam, commentParam) => {
+           await dbRef
+               .add({
+                   firstname: firstnameParam,
+                   lastname: lastnameParam,
+                   category: categoryParam,
+                   amount: amountParam,
+                   comment: commentParam
+               })
+               .then((e) => console.log("e", e))
+               .catch((err) => console.log("une erreur est survenue", err))
+       } */
+    /*     const youpi =  getData("expenses","expenses"+data.firstname+data.lastname,setMyExpensesArray)
+     */
+
+
+    /* const youpi = collection(db, "expenses");
+    
+    
+    const docRef = doc(db, "expenses", "JwaOkrSd2lA5IXBiDaLA");
+    
+    console.log("docRef after submit",docRef.path);
+    console.log("youpi test",youpi); */
+    const [myExpensesArray, setMyExpensesArray] = useState('')
+
+
+    useEffect(() => {
+
+        const unsub = onSnapshot(collection(db, "expenses"), (querySnapshot) => {
+            const documents = querySnapshot.docs.map((doc) => {
+                return {
+                    ...doc.data()
+                }
+            });
+            setMyExpensesArray(documents);
+        });
+        return () => unsub();
+    }, [])
+
+    const randomNumberId = () => {
+
+        return
     }
- useEffect(()=>{
-    getData()
-console.log("myExpensesArray après submit",myExpensesArray);
-},[]) */
-    const dbRef = firebase.firestore().collection('expenses');
-    const createExpense = async (firstname, lastname, category, amount, comment) => {
-        await dbRef
-            .add({
-                firstname: firstname,
-                lastname: lastname,
-                category: category,
-                amount: amount,
-                comment: comment
+    const createExpense = (firstnameParam, lastnameParam, typeTransactionParam, categoryParam, amountParam, commentParam) => {
+
+        const myDoc = doc(db, "expenses", "expenses" + `${firstnameParam}` + `${lastnameParam}`)
+        const docData = {
+            "firstname": firstnameParam,
+            "lastname": lastnameParam,
+            "type": typeTransactionParam,
+            "category": categoryParam,
+            "amount": amountParam,
+            "comment": commentParam
+        }
+        setDoc(myDoc, docData)
+            .then((element) => {
+                console.log(element, "ELEMENT");
             })
-            .then((e) => console.log("e", e))
-            .catch((err) => console.log("une erreur est survenue", err))
+            .catch((err) => {
+                console.log("youpi une erreur !", err);
+            })
     }
+    console.log("myexpensesrray", myExpensesArray);
     return (
         <View>
             <Formik
-                initialValues={{ firstname: '', lastname: '', category: '', amount: '', comment: '' }}
+                initialValues={{ firstname: '', lastname: '', typeTransaction: '', category: '', amount: '', comment: '' }}
                 validateOnMount={true}
                 onSubmit={(data) => {
                     data.category = category
-
+                    data.type = category
                     /*  setLastname(data.lastname)
                      setAmount(data.amount)
                      setComment(data.comment) */
-                    createExpense(data.firstname, data.lastname, category, data.amount, data.comment)
-                 
+                    createExpense(data.firstname, data.lastname, data.typeTransaction, category, data.amount, data.comment)
+
+
                     /*                     navigation.navigate('Ecran test', { data })
                      */
                 }}
@@ -158,7 +220,7 @@ console.log("myExpensesArray après submit",myExpensesArray);
                                 }}
                                 buttonTextStyle={styles.dropdown1BtnTxtStyle}
                                 buttonStyle={styles.dropdown3BtnStyle}
-                                data={expensesMisc}
+                                data={expenseMisc}
                                 value={values.category}
                                 onSelect={(selectedItem, index) => {
                                     setCategory(selectedItem)

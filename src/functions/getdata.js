@@ -1,11 +1,12 @@
-
+/* 
 import firebase from '../../database/firebaseDb';
+
 
 const GetData = async () => {
 
     try {
         let expensesList = []
-        let snpashot = await firebase.firestore().collection('expenses').get()
+        let snpashot = await db.firestore().collection('expenses').get()
         snpashot.forEach((e) => {
             expensesList.push(e.data())
         })
@@ -16,7 +17,7 @@ const GetData = async () => {
 }
 
 const superData = GetData();
-export default superData;
+export default superData; */
 /* import { collection, doc, getDocs, query } from "firebase/firestore"; 
 import firebaseApp from "../../database/firebaseDb";
 const getData = async () =>{
