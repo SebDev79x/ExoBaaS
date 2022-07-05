@@ -6,16 +6,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = ({ navigation }) => {
     const [mySolde, setSolde] = useState('')
     const [lastOps, setLastOps] = useState([])
-
-console.log("mysolde",mySolde);
     const GetData = async () => {
         try {
-             await AsyncStorage.getItem('solde').then(element =>setSolde(element))
-                // We have data!!
-            
+            await AsyncStorage.getItem('solde').then(element => setSolde(element))
+            // We have data!!
+
         } catch (err) {
             // error reading value
-            console.log("erreur survenue",err);
+            console.log("erreur survenue", err);
         }
     }
     const GetLastOperations = async () => {
@@ -34,64 +32,53 @@ console.log("mysolde",mySolde);
     return (
 
         <View style={styles.container}>
-            <View style={styles.alignAsARow}>
-                <View>
-                    <TouchableOpacity
-                        onPress={() => GetData()}
-                        style={styles.btnSolde}
+            <View>
+                <TouchableOpacity
+                    onPress={() => GetData()}
+                    style={styles.btnSolde}
 
-                    >
-                        <Text style={styles.textSolde}>Mon solde :</Text>
-                    </TouchableOpacity>
-                    <Text >{mySolde}</Text>
-
-                </View>
-                <View>
-                    <TouchableOpacity
-                        onPress={() => GetLastOperations()}
-                        style={styles.btnLastOps}
-
-                    >
-                        <Text style={styles.textLastOps}>Dernières opérations :</Text>
-                    </TouchableOpacity>
-                    
-                </View>
+                >
+                    <Text style={styles.textSolde}>Mon solde</Text>
+                </TouchableOpacity>
+                <Text >{mySolde}</Text>
 
             </View>
             <View>
-            <FlatList
-                        data={lastOps}
-                        renderItem={({ item }) =>
-                            <View>
+                <TouchableOpacity
+                    onPress={() => GetLastOperations()}
+                    style={styles.btnLastOps}
 
-                                <Text>Opération en date du {item.date}</Text>
-                                <Text>Montant : {item.amount}</Text>
-                                <Text>Catégorie : {item.category}</Text>
-                                <Text>Commentaire : {item.comments}</Text>
-                                <Text>_______________________</Text>
-                            </View>
+                >
+                    <Text style={styles.textLastOps}>Dernières opérations</Text>
+                </TouchableOpacity>
 
+            </View>
 
-                        }
-                    />
+            <View>
+                <FlatList
+                    data={lastOps}
+                    renderItem={({ item }) =>
+                        <View>
+                            <Text>ATTENTION : valeurs du fichier json</Text>
+
+                            <Text>Opération en date du {item.date}</Text>
+                            <Text>Montant : {item.amount}</Text>
+                            <Text>Catégorie : {item.category}</Text>
+                            <Text>Commentaire : {item.comments}</Text>
+                            <Text>_______________________</Text>
+                        </View>
+                    }
+                />
             </View>
             <View style={styles.btns}>
-                <View>
-                    <TouchableOpacity
-                        style={styles.btnConnection}
-                        onPress={() => navigation.navigate('Ajout Revenus')}
-                    >
-                        <Text style={styles.textConnection}>Ajout REVENUS</Text>
-                    </TouchableOpacity>
-                </View>
 
                 <View>
                     <TouchableOpacity
                         style={styles.btnRegister}
-                        onPress={() => navigation.navigate('Ajout Dépenses')}
+                        onPress={() => navigation.navigate('Ajout transaction')}
 
                     >
-                        <Text style={styles.textRegister}>Ajout DEPENSES</Text>
+                        <Text style={styles.textRegister}>Ajout Transaction</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -106,14 +93,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FAF0D7',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        borderWidth: 2,
-        borderColor: 'red'
+
     },
     btns: {
         flexDirection: 'row',
         justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: 'red'
+
     },
     validate: {
         width: 200,
@@ -147,7 +132,7 @@ const styles = StyleSheet.create({
 
         backgroundColor: '#F4BFBF',
         padding: 10,
-        width: 150,
+        width: 200,
         alignItems: 'center',
         borderRadius: 10
     },
@@ -181,7 +166,7 @@ const styles = StyleSheet.create({
 
         backgroundColor: '#a7dbcf',
         padding: 10,
-        width: 150,
+        width: 200,
         alignItems: 'center',
         borderRadius: 10
     },

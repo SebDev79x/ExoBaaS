@@ -5,9 +5,8 @@ import Stats from '../components/stats';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNav from './tab'
-import AddIncomes from '../components/addIncomesWithDB'
-import AddExpenses from '../components/addExpensesWithDB'
-import ScreenTest from '../components/test';
+import AddTransaction from '../components/addTransaction'
+import TransactionsList from '../components/test';
 // remettre         <Stack.Screen  name="Accueil" component={TabNav} /> à  la place de         <Stack.Screen  name="Accueil" component={HomeScreen} />
 
 
@@ -18,10 +17,9 @@ const StackNav = () => {
     <NavigationContainer>
 
       <Stack.Navigator >
-        <Stack.Screen  name="Accueil" component={HomeScreen} />
-        <Stack.Screen name="Ajout Revenus" component={AddIncomes} />
-        <Stack.Screen name="Ajout Dépenses" component={AddExpenses} />
-        <Stack.Screen name="Ecran test" component={ScreenTest} />
+        <Stack.Screen  name="Accueil" component={TabNav} />
+        <Stack.Screen name="Ajout transaction" component={AddTransaction} />
+        <Stack.Screen name="Liste transactions" component={TransactionsList} />
 
       </Stack.Navigator>
       </NavigationContainer>

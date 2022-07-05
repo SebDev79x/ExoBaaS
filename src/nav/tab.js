@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import HomeScreen from '../../src/components/homescreen';
 import Account from '../../src/components/account'
 import Stats from '../../src/components/stats';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator ()
 const TabNav = () => {

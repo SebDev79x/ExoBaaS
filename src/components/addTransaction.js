@@ -13,12 +13,12 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 
 // Tableau des types de dépenses
-const expenseMisc = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Autres dépenses"]
+const title = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Patati patata", "Autres"]
 // Tableau des types de transactions
-/* const transactionType = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Autres dépenses"]
- */
+const transactionType = ["Débit", "Crédit"]
+
 // Objet YUP
-const expensesValidationSchema = yup.object().shape({
+const transactionValidationSchema = yup.object().shape({
     firstname: yup
         .string()
         .min(3, ({ min }) => `Minimum ${min} caractères`)
@@ -37,7 +37,8 @@ const expensesValidationSchema = yup.object().shape({
             /^/,
             "Nom invalide"
         ),
-
+    type: yup
+        .string(),
     category: yup
         .string(),
     amount: yup
@@ -58,16 +59,20 @@ const expensesValidationSchema = yup.object().shape({
         )
 });
 // TEST NEW METHOD
-
-
+/* export const UserContext = React.createContext();
+ */
 // Mon composant principal
-const AddExpenses = ({ navigation }) => {
-
+const AddATransaction = ({ navigation,route }) => {
+const thisTransaction = route.params
+console.log("ON récupère bien les données dans la console, pas dans les inputs, mais c'est normal, rien n'a été fait ni tenté à ce niveau-là");
+console.log("thistransaction",thisTransaction);
     // State du tableau global des dépenses
     /*     const [myExpensesArray, setMyExpensesArray] = useState('')
      */
     // State de la catégorie
     const [category, setCategory] = useState("Aucune catégorie");
+    const [type, setType] = useState("Rien");
+
     /*  const [firstnameX, setFirstname] = useState('')
     const [lastnameX, setLastname] = useState('') 
     const [amountX, setAmount] = useState('')
@@ -106,40 +111,39 @@ const AddExpenses = ({ navigation }) => {
      */
 
 
-    /* const youpi = collection(db, "expenses");
-    
-    
-    const docRef = doc(db, "expenses", "JwaOkrSd2lA5IXBiDaLA");
-    
-    console.log("docRef after submit",docRef.path);
-    console.log("youpi test",youpi); */
-    const [myExpensesArray, setMyExpensesArray] = useState('')
+    const youpi = collection(db, "transactions");
+
+
+    /*     const docRef = doc(db, "transactions");
+     */
+    /*     console.log("collection",docRef.path);
+     */
+    const [myTransactions, setMyTransactions] = useState('')
 
 
     useEffect(() => {
-
-        const unsub = onSnapshot(collection(db, "expenses"), (querySnapshot) => {
+        const unsub = onSnapshot(collection(db, "transactions"), (querySnapshot) => {
             const documents = querySnapshot.docs.map((doc) => {
                 return {
-                    ...doc.data()
+                    ...doc.data(),
+                    id: doc.id
                 }
             });
-            setMyExpensesArray(documents);
+            setMyTransactions(documents);
         });
         return () => unsub();
     }, [])
-
+    // Génération d'un nombre aléatoire pour l'ID
     const randomNumberId = () => {
-
-        return
+        return Date.now()
     }
-    const createExpense = (firstnameParam, lastnameParam, typeTransactionParam, categoryParam, amountParam, commentParam) => {
-
-        const myDoc = doc(db, "expenses", "expenses" + `${firstnameParam}` + `${lastnameParam}`)
+    // Ajout/Création d'une transaction
+    const createExpense = (firstnameParam, lastnameParam, typeParam, categoryParam, amountParam, commentParam) => {
+        const myDoc = doc(db, "transactions", `${randomNumberId()}`)
         const docData = {
             "firstname": firstnameParam,
             "lastname": lastnameParam,
-            "type": typeTransactionParam,
+            "type": typeParam,
             "category": categoryParam,
             "amount": amountParam,
             "comment": commentParam
@@ -152,25 +156,34 @@ const AddExpenses = ({ navigation }) => {
                 console.log("youpi une erreur !", err);
             })
     }
-    console.log("myexpensesrray", myExpensesArray);
     return (
+
         <View>
+            {/*    <View>
+
+                <TouchableOpacity
+                    style={styles.btnUpdate}
+                    onPress={() => {
+                        navigation.navigate('Ecran test')
+                    }}>
+                    <Text style={styles.textUpdate}>GOOOOO</Text>
+                </TouchableOpacity>
+
+            </View> */}
             <Formik
                 initialValues={{ firstname: '', lastname: '', typeTransaction: '', category: '', amount: '', comment: '' }}
                 validateOnMount={true}
                 onSubmit={(data) => {
-                    data.category = category
-                    data.type = category
-                    /*  setLastname(data.lastname)
+                   
+                    /* ,{resetForm} setLastname(data.lastname)
                      setAmount(data.amount)
                      setComment(data.comment) */
-                    createExpense(data.firstname, data.lastname, data.typeTransaction, category, data.amount, data.comment)
+                    createExpense(data.firstname, data.lastname, type, category, data.amount, data.comment)
+/*                     resetForm({data})
+ */                    navigation.navigate('Liste transactions', { data: [...myTransactions, data] })
 
-
-                    /*                     navigation.navigate('Ecran test', { data })
-                     */
                 }}
-                validationSchema={expensesValidationSchema}
+                validationSchema={transactionValidationSchema}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, touched, isValid, errors }) => (
                     <View>
@@ -191,7 +204,7 @@ const AddExpenses = ({ navigation }) => {
                             </View>
                             {(touched.firstname && errors.firstname) && <Text style={styles.errors}>{errors.firstname}</Text>}
                         </View>
-                        <View style={{ height: 30 }}><Text>ESPACE</Text></View>
+                        <View style={{ height: 30 }}></View>
 
                         <View>
                             <View style={styles.center}>
@@ -210,7 +223,10 @@ const AddExpenses = ({ navigation }) => {
                             </View>
                             {(touched.lastname && errors.lastname) && <Text style={styles.errors}>{errors.lastname}</Text>}
                         </View>
-                        <View style={{ height: 30 }}><Text>ESPACE</Text></View>
+
+
+
+                        <View style={{ height: 30 }}></View>
                         <View>
                             <SelectDropdown
                                 rules={{
@@ -220,7 +236,26 @@ const AddExpenses = ({ navigation }) => {
                                 }}
                                 buttonTextStyle={styles.dropdown1BtnTxtStyle}
                                 buttonStyle={styles.dropdown3BtnStyle}
-                                data={expenseMisc}
+                                data={transactionType}
+                                value={values.type}
+                                onSelect={(selectedItem, index) => {
+                                    setType(selectedItem)
+                                }}
+                            />
+                        </View>
+
+
+                        <View style={{ height: 30 }}></View>
+                        <View>
+                            <SelectDropdown
+                                rules={{
+                                    required: {
+                                        message: 'Champ requis'
+                                    },
+                                }}
+                                buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                                buttonStyle={styles.dropdown3BtnStyle}
+                                data={title}
                                 value={values.category}
                                 onSelect={(selectedItem, index) => {
                                     setCategory(selectedItem)
@@ -228,7 +263,7 @@ const AddExpenses = ({ navigation }) => {
                             />
                         </View>
                         <View>
-                            <View style={{ height: 30 }}><Text>ESPACE</Text></View>
+                            <View style={{ height: 30 }}></View>
 
                         </View>
 
@@ -298,23 +333,43 @@ const AddExpenses = ({ navigation }) => {
 
                 <View>
                     <FlatList
-                        data={myExpensesArray}
+                        data={myTransactions}
 
                         renderItem={({ item }) =>
-                            <View>
+                            <View style={{ flexDirection: 'row' }}>
                                 <View>
-                                    <Text>______________________</Text>
+                                    <View>
+                                    </View>
+                                    <View style={styles.alignRow}>
+                                        <Text>Type de transaction : {item.type}</Text>
+                                        <Text>Cat : {item.category}</Text>
+                                        <Text>{item.type == "Débit" ? "Débiteur : " : "Créditeur : "}{item.lastname}</Text>
+                                        <Text>Montant : {item.amount}</Text>
+                                    </View>
+                                    <View style={styles.alignColumn}>
+                                        <Text>Commentaire : {item.comment}</Text>
+                                        <Text>Opération N° : {item.id}</Text>
+                                    </View>
+                                </View>
 
-                                    <Text>______________________</Text>
+                                <View>
+
+                                    <TouchableOpacity
+                                        style={styles.btnUpdate}
+                                        onPress={() => {
+                                            console.log("submit de la transaction");
+                                        }} title="Submit">
+                                        <Text style={styles.textUpdate}>Modifier</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.btnDelete}
+                                        onPress={() => {
+                                            console.log("submit de la transaction");
+                                        }} title="Submit">
+                                        <Text style={styles.textDelete}>Supprimer</Text>
+                                    </TouchableOpacity>
                                 </View>
-                                <View style={styles.alignRow}>
-                                    <Text>Montant : {item.amount}</Text>
-                                    <Text>Cat : {item.category}</Text>
-                                </View>
-                                <View style={styles.alignColumn}>
-                                    <Text>Commentaire : {item.comment}</Text>
-                                    <Text>Opération N° : {item.lastname}</Text>
-                                </View>
+
                             </View>
                         }
                     />
@@ -324,15 +379,6 @@ const AddExpenses = ({ navigation }) => {
     );
 }
 
-
-
-
-
-
-
-
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -341,8 +387,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly'
     },
     input: {
-/*     height: 40,
-*/    backgroundColor: 'grey',
+        backgroundColor: 'grey',
         color: 'black',
         fontSize: 18,
         borderRadius: 10,
@@ -362,23 +407,37 @@ const styles = StyleSheet.create({
     },
 
     inputs: {
-/*     marginBottom: 10,
-*/    flexDirection: 'column',
+        flexDirection: 'column',
         justifyContent: 'space-around',
     },
-    btnValidate: {
+
+    btnUpdate: {
         /* '#306ec2' */
-        backgroundColor: 'yellow',
+        backgroundColor: '#306ec2',
         padding: 10,
-        width: 150,
+        width: 100,
         alignItems: 'center',
         borderRadius: 10
 
     },
-    textValidate: {
-        color: 'black',
+    textUpdate: {
+        color: 'white',
         fontWeight: 'bold',
-        fontSize: 20
+        fontSize: 15
+    },
+    btnDelete: {
+        /* '#306ec2' */
+        backgroundColor: 'red',
+        padding: 10,
+        width: 100,
+        alignItems: 'center',
+        borderRadius: 10
+
+    },
+    textDelete: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 15
     },
     errors: {
         color: 'red'
@@ -427,4 +486,4 @@ const styles = StyleSheet.create({
 
 
 
-export default AddExpenses
+export default AddATransaction;
