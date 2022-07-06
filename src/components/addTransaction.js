@@ -62,10 +62,10 @@ const transactionValidationSchema = yup.object().shape({
 /* export const UserContext = React.createContext();
  */
 // Mon composant principal
-const AddATransaction = ({ navigation,route }) => {
-const thisTransaction = route.params
-console.log("ON récupère bien les données dans la console, pas dans les inputs, mais c'est normal, rien n'a été fait ni tenté à ce niveau-là");
-console.log("thistransaction",thisTransaction);
+const AddATransaction = ({ navigation, route }) => {
+    const thisTransaction = route.params
+    console.log("ON récupère bien les données dans la console, pas dans les inputs, mais c'est normal, rien n'a été fait ni tenté à ce niveau-là");
+    console.log("thistransaction", thisTransaction);
     // State du tableau global des dépenses
     /*     const [myExpensesArray, setMyExpensesArray] = useState('')
      */
@@ -106,18 +106,15 @@ console.log("thistransaction",thisTransaction);
                })
                .then((e) => console.log("e", e))
                .catch((err) => console.log("une erreur est survenue", err))
-       } */
-    /*     const youpi =  getData("expenses","expenses"+data.firstname+data.lastname,setMyExpensesArray)
-     */
+       }
+        const youpi =  getData("expenses","expenses"+data.firstname+data.lastname,setMyExpensesArray) */
+    
 
 
-    const youpi = collection(db, "transactions");
+   /*  const youpi = collection(db, "transactions");
+    const docRef = doc(db, "transactions");
+    console.log("collection", docRef.path); */
 
-
-    /*     const docRef = doc(db, "transactions");
-     */
-    /*     console.log("collection",docRef.path);
-     */
     const [myTransactions, setMyTransactions] = useState('')
 
 
@@ -173,14 +170,14 @@ console.log("thistransaction",thisTransaction);
             <Formik
                 initialValues={{ firstname: '', lastname: '', typeTransaction: '', category: '', amount: '', comment: '' }}
                 validateOnMount={true}
-                onSubmit={(data) => {
-                   
+                onSubmit={(data, { resetForm }) => {
+
                     /* ,{resetForm} setLastname(data.lastname)
                      setAmount(data.amount)
                      setComment(data.comment) */
                     createExpense(data.firstname, data.lastname, type, category, data.amount, data.comment)
-/*                     resetForm({data})
- */                    navigation.navigate('Liste transactions', { data: [...myTransactions, data] })
+                    resetForm({ data })
+                    navigation.navigate('Liste transactions', { data: [...myTransactions, data] })
 
                 }}
                 validationSchema={transactionValidationSchema}
@@ -331,7 +328,7 @@ console.log("thistransaction",thisTransaction);
                             </TouchableOpacity> */}
                 </View>
 
-                <View>
+                {/*  <View>
                     <FlatList
                         data={myTransactions}
 
@@ -373,7 +370,7 @@ console.log("thistransaction",thisTransaction);
                             </View>
                         }
                     />
-                </View>
+                </View> */}
             </ScrollView>
         </View>
     );

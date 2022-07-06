@@ -1,4 +1,4 @@
-/* import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import superData from '../functions/getdata'
 import { db } from '../../database/config'
 import { useState, useEffect, createContext, useContext } from 'react';
@@ -6,20 +6,19 @@ import { doc, setDoc, collection, onSnapshot, deleteDoc,updateDoc } from 'fireba
 
 
 // Composant Liste des transactions
-const UpdateTransaction = (id,data) => {
-   
-    const ref = doc(db, "transactions", id);
-
-    await updateDoc(ref, {
-        "firstname": data.firstname,
-        "lastname": data.lastname,
-        "type": data.type,
-        "category": data.category,
-        "amount": data.amount,
-        "comment": data.comment    });
-   
+const getDataFromDB = (props) =>{
+const {collectionName} = props
+const {setMethod} = props
+    const unsub = onSnapshot(collection(db, {collectionName}), (querySnapshot) => {
+        const documents = querySnapshot.docs.map((doc) => {
+            return {
+                ...doc.data(),
+                id: doc.id
+            }
+        });
+        setMethod(documents);
+    });
+    return () => unsub();
 }
 
-
-
-export default UpdateTransaction; */
+export default getDataFromDB;

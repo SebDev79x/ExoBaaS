@@ -22,8 +22,6 @@ const HomeScreen = ({ navigation }) => {
                 setLastOps(JSON.parse(element));
                 // or code.toString().. depends on what you stored
             })
-
-
         } catch (e) {
             // error reading value
         }
