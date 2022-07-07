@@ -7,13 +7,7 @@ import { db } from '../../database/config'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 
-// Tableau des types de dépenses
-const titles = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Patati patata", "Autres"]
-// Tableau des types de transactions
-const transactionTypes = ["Débit", "Crédit"]
-
-// Objet YUP
-const transactionValidationSchema = yup.object().shape({
+const updateTransactionValidationSchema = yup.object().shape({
     firstname: yup
         .string()
         .min(3, ({ min }) => `Minimum ${min} caractères`)
@@ -53,68 +47,54 @@ const transactionValidationSchema = yup.object().shape({
             "Commentaire invalide"
         )
 });
-// Mon composant principal
-const AddATransaction = ({ navigation, route }) => {
-    /*     const thisTransaction = route.params
-     */
-    // State de la catégorie
-    const [category, setCategory] = useState("Aucune catégorie");
-    const [type, setType] = useState("Rien");
-    const [myTransactions, setMyTransactions] = useState('')
 
+const UpdateTransaction = ({ navigation, route }) => {
+    // Tableau des types de dépenses
+    const title = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Patati patata", "Autres"]
+    // Tableau des types de transactions
+    const transactionType = ["Débit", "Crédit"]
+    // Destructuring
+    const { firstname } = route.params.item
+    const { lastname } = route.params.item
+    const { comment } = route.params.item
+    const { amount } = route.params.item
+    const { id } = route.params.item
+    const { category } = route.params.item
+    const { type } = route.params.item
+    // States
+    const [categoryX, setCategory] = useState(category);
+    const [typeX, setType] = useState(type);
+    // Update un document
+    const updateTransaction = (value) => {
+        const myDoc = doc(db, "transactions", id)
 
-    useEffect(() => {
-        let isMounted = true;
-        const unsub = onSnapshot(collection(db, "transactions"), (querySnapshot) => {
-            const documents = querySnapshot.docs.map((doc) => {
-                return {
-                    ...doc.data(),
-                    id: doc.id
-                }
-            });
-            if (isMounted) {
-                setMyTransactions(documents);
-            }
-        });
-        return () => {
-            unsub()
-            { isMounted = false }
-        };
-    }, [])
-    // Génération d'un nombre aléatoire pour l'ID
-    const randomNumberId = () => {
-        return Date.now()
-    }
-    // Ajout/Création d'une transaction
-    const createExpense = (firstnameParam, lastnameParam, typeParam, categoryParam, amountParam, commentParam) => {
-        const myDoc = doc(db, "transactions", `${randomNumberId()}`)
-        const docData = {
-            "firstname": firstnameParam,
-            "lastname": lastnameParam,
-            "type": typeParam,
-            "category": categoryParam,
-            "amount": amountParam,
-            "comment": commentParam
-        }
-        setDoc(myDoc, docData)
-            .then((element) => {
-                console.log(element, "ELEMENT");
+        setDoc(myDoc, value)
+            .then(() => {
+                console.log("UPDATED TRANSACTION");
             })
             .catch((err) => {
-                console.log("youpi une erreur !", err);
+                console.log("OUPS une erreur !", err);
             })
     }
     return (
+
         <View>
             <Formik
-                initialValues={{ firstname: '', lastname: '', typeTransaction: '', category: '', amount: '', comment: '' }}
-                validateOnMount={true}
-                onSubmit={(data, { resetForm }) => {
-                    createExpense(data.firstname, data.lastname, type, category, data.amount, data.comment)
-                    resetForm({ data })
-                    navigation.navigate('Liste transactions', { data: [...myTransactions, data] })
+                initialValues={{
+                    firstname: firstname,
+                    lastname: lastname,
+                    category: category,
+                    type: type,
+                    amount: amount,
+                    comment: comment
                 }}
-                validationSchema={transactionValidationSchema}
+                validateOnMount={true}
+                onSubmit={(data) => {
+                    data.category = categoryX
+                    data.type = typeX
+                    updateTransaction({ ...data })
+                }}
+                validationSchema={updateTransactionValidationSchema}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, touched, isValid, errors }) => (
                     <View>
@@ -162,9 +142,10 @@ const AddATransaction = ({ navigation, route }) => {
                                         message: 'Champ requis'
                                     },
                                 }}
+                                defaultValue={type}
                                 buttonTextStyle={styles.dropdown1BtnTxtStyle}
                                 buttonStyle={styles.dropdown3BtnStyle}
-                                data={transactionTypes}
+                                data={transactionType}
                                 value={values.type}
                                 onSelect={(selectedItem, index) => {
                                     setType(selectedItem)
@@ -179,9 +160,10 @@ const AddATransaction = ({ navigation, route }) => {
                                         message: 'Champ requis'
                                     },
                                 }}
+                                defaultValue={category}
                                 buttonTextStyle={styles.dropdown1BtnTxtStyle}
                                 buttonStyle={styles.dropdown3BtnStyle}
-                                data={titles}
+                                data={title}
                                 value={values.category}
                                 onSelect={(selectedItem, index) => {
                                     setCategory(selectedItem)
@@ -190,7 +172,6 @@ const AddATransaction = ({ navigation, route }) => {
                         </View>
                         <View>
                             <View style={{ height: 30 }}></View>
-
                         </View>
                         <View>
                             <View style={styles.center}>
@@ -238,10 +219,15 @@ const AddATransaction = ({ navigation, route }) => {
                     </View>
                 )}
             </Formik>
+            <ScrollView>
+                <View style={styles.center2}>
+                </View>
+            </ScrollView>
         </View>
     );
 }
 
+// Style
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -342,11 +328,7 @@ const styles = StyleSheet.create({
         color: '#fcf5d9',
         fontWeight: 'bold',
         fontSize: 20,
-
     }
 });
 
-
-
-
-export default AddATransaction;
+export default UpdateTransaction;

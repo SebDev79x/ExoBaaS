@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, ActivityIndicator, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { db } from '../../database/config'
 import { useState, useEffect, createContext, useContext } from 'react';
 import { doc, setDoc, collection, onSnapshot, deleteDoc, updateDoc } from 'firebase/firestore';
-
+import UpdateTransaction from './updateTransaction'
 // Fonction pour supprimer une transaction
 const deleteADocument = async (id) => {
     await deleteDoc(doc(db, "transactions", id));
@@ -10,13 +10,25 @@ const deleteADocument = async (id) => {
 // Composant Liste des transactions
 const TransactionsList = ({ navigation, route }) => {
     const [dataExist, setDataExist] = useState(false)
+    // Mettre ici un log de dataExist
+    const updateState = (array) => {
+        setDataExist(false)
 
+        if (array.length > 0) {
+            console.log("ARRAY VAUT : ", array);
+            setDataExist(true)
+        }
+    }
     // On récupère les data passées via les paramètres de la route
-    const dataFromAddExpenses = route.params
-    // Map sur tableau d'objets
-    const allTransactions = dataFromAddExpenses.data.map((e) => e)
+    /*     const dataFromAddExpenses = route.params.data.map((e) => e)
+     */    // Map sur tableau d'objets
+    /* const allTransactions =  dataFromAddExpenses.data.map((e) => e)*/
+    /*     console.log("allTransactions",allTransactions);
+        !allTransactions.length ? [setDataExist(false),"FAUX Carpentier!"] : [setDataExist(true),"trou"]
+    
+        console.log("TEST LENGTH dataExist",dataExist); */
     // Initialisation du state des transactions
-    const [transactions, setTransactions] = useState(allTransactions)
+    const [transactions, setTransactions] = useState('')
     // Actualisation de la liste des documents après la suppression
     useEffect(() => {
         const unsub = onSnapshot(collection(db, "transactions"), (querySnapshot) => {
@@ -27,14 +39,14 @@ const TransactionsList = ({ navigation, route }) => {
                 }
             });
             setTransactions(documents);
+/*             console.log("querySnapshot.docs", querySnapshot.docs);
+ */            updateState(querySnapshot.docs)
         });
         return () => unsub();
     }, [])
 
-
-    return (
-        <View>
-            <Text>TEST ECRAN</Text>
+    return dataExist == false ? (<View style={styles.noData}><Text>AUCUNE DONNEE DISPONIBLE</Text></View>) :
+        (<View>
             <FlatList
                 data={transactions}
 
@@ -57,7 +69,7 @@ const TransactionsList = ({ navigation, route }) => {
                                 <TouchableOpacity
                                     style={styles.btnUpdate}
                                     onPress={() => {
-                                        navigation.navigate('Ajout transaction', { item })
+                                        navigation.navigate('UpdateTransaction', { item })
                                     }} title="Submit">
                                     <Text style={styles.textUpdate}>Modifier</Text>
                                 </TouchableOpacity>
@@ -66,6 +78,9 @@ const TransactionsList = ({ navigation, route }) => {
                                     onPress={() => {
                                         console.log("Supprimer la transaction");
                                         deleteADocument(item.id)
+                                        console.log("transactions", transactions);
+                                        updateState(transactions)
+
                                     }} title="Submit">
                                     <Text style={styles.textDelete}>Supprimer</Text>
                                 </TouchableOpacity>
@@ -76,7 +91,6 @@ const TransactionsList = ({ navigation, route }) => {
             />
         </View>
         );
-
 }
 
 const styles = StyleSheet.create({
@@ -114,6 +128,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 15
     },
+    noData: {
+        fontWeight: 'bold',
+        fontSize: 15,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    }
 });
 
 export default TransactionsList;

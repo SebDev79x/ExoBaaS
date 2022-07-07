@@ -20,7 +20,6 @@ const HomeScreen = ({ navigation }) => {
         try {
             await AsyncStorage.getItem('lastOps').then(element => {
                 setLastOps(JSON.parse(element));
-                // or code.toString().. depends on what you stored
             })
         } catch (e) {
             // error reading value
