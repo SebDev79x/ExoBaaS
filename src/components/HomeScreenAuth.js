@@ -8,14 +8,18 @@ import LoginScreen from './ConnectLog/LoginScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import StackAuth from '../nav/stackAuth';
 import StackNav from '../nav/stack';
-
-const HomeScreenAuth = ({ navigation }) => {
+import ImageBackGround from './ImageBackGround';
+const HomeScreenAuth = ({ navigation },props) => {
 
   
 
     return (
 
         <View style={styles.container}>
+            <ImageBackGround
+            urlToInsert = 'https://storyset.com/illustration/sun-rise/pana'
+            path={props.urlToInsert}
+            />
             <Text>My auth screen</Text>
             <View>
                 <TouchableOpacity
@@ -40,8 +44,8 @@ const HomeScreenAuth = ({ navigation }) => {
         const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        backgroundColor: '#FAF0D7',
+       /*  backgroundColor: '#fff',
+        backgroundColor: '#FAF0D7', */
         alignItems: 'center',
         justifyContent: 'space-evenly',
 
