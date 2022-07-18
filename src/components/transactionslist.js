@@ -2,7 +2,7 @@ import { StyleSheet, ActivityIndicator, Text, View, TextInput, TouchableOpacity,
 import { db } from '../../database/config'
 import { useState, useEffect, createContext, useContext } from 'react';
 import { doc, setDoc, collection, onSnapshot, deleteDoc, updateDoc } from 'firebase/firestore';
-import UpdateTransaction from './updateTransaction'
+import UpdateTransaction from './updateForm'
 // Fonction pour supprimer une transaction
 const deleteADocument = async (id) => {
     await deleteDoc(doc(db, "transactions", id));
@@ -76,7 +76,6 @@ const TransactionsList = ({ navigation, route }) => {
                                 <TouchableOpacity
                                     style={styles.btnDelete}
                                     onPress={() => {
-                                        console.log("Supprimer la transaction");
                                         deleteADocument(item.id)
                                         console.log("transactions", transactions);
                                         updateState(transactions)

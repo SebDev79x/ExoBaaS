@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import * as yup from 'yup';
@@ -6,7 +7,9 @@ import SelectDropdown from 'react-native-select-dropdown'
 import { db } from '../../database/config'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
-
+import update_document_transaction from '../functions/update_doc_function';
+import TransactionDetails from './TransactionDetails';
+import { useRef } from 'react';
 const updateTransactionValidationSchema = yup.object().shape({
     firstname: yup
         .string()
@@ -49,11 +52,12 @@ const updateTransactionValidationSchema = yup.object().shape({
 });
 
 const UpdateTransaction = ({ navigation, route }) => {
+    // Tableau des types de transactions
+    const transactionType = ["Débit", "Crédit", "choix", "Macron", "Brigitte", "Morgan", "Jackie"]
     // Tableau des types de dépenses
     const title = ["Facture", "Logement", "Transport", "Alimentaire", "Foncier", "Patati patata", "Autres"]
-    // Tableau des types de transactions
-    const transactionType = ["Débit", "Crédit"]
-    // Destructuring
+
+    // Destructuring pour récupérer et afficher données dans les inputs
     const { firstname } = route.params.item
     const { lastname } = route.params.item
     const { comment } = route.params.item
@@ -62,23 +66,34 @@ const UpdateTransaction = ({ navigation, route }) => {
     const { category } = route.params.item
     const { type } = route.params.item
     // States
-    const [categoryX, setCategory] = useState(category);
-    const [typeX, setType] = useState(type);
-    // Update un document
-    const updateTransaction = (value) => {
-        const myDoc = doc(db, "transactions", id)
-
-        setDoc(myDoc, value)
-            .then(() => {
-                console.log("UPDATED TRANSACTION");
-            })
-            .catch((err) => {
-                console.log("OUPS une erreur !", err);
-            })
-    }
+    /*     const [categoryX, setCategory] = useState(category);
+     *//*     const [typeX, setType] = useState(type);
+   */    // States pour afficher données en temps réel hors des inputs
+    const [fname, setFname] = useState(firstname)
+    const [lname, setLname] = useState(lastname)
+    const [cmt, setComment] = useState(comment)
+    const [amt, setAmount] = useState(amount)
+    const [cat, setCat] = useState(category)
+    const [typeoftransaction, setTypeoftransaction] = useState(type)
+    /* useEffect(()=>{
+        setCat(category)
+    }) */
     return (
 
         <View>
+            <ScrollView style={styles.scrollView}>
+            <View>
+                <TransactionDetails
+                    firstname={fname}
+                    lastname={lname}
+                    comment={cmt}
+                    amount={amt}
+                    id={id}
+                    type={typeoftransaction}
+                    category={cat}
+                />
+            </View>
+
             <Formik
                 initialValues={{
                     firstname: firstname,
@@ -90,9 +105,9 @@ const UpdateTransaction = ({ navigation, route }) => {
                 }}
                 validateOnMount={true}
                 onSubmit={(data) => {
-                    data.category = categoryX
-                    data.type = typeX
-                    updateTransaction({ ...data })
+                    data.category = cat
+                    data.type = typeoftransaction
+                    update_document_transaction({ ...data }, "transactions", id)
                 }}
                 validationSchema={updateTransactionValidationSchema}
             >
@@ -102,13 +117,30 @@ const UpdateTransaction = ({ navigation, route }) => {
                             <View style={styles.center}>
                                 <Text style={styles.label}>Prénom</Text>
                             </View>
+                            {/* <TextInputComponent
+                            style={styles.input}
+                            mode="flat"
+                            placeholder="Prénom"
+                                    placeholderTextColor={'grey'}
+                                    onChangeText={(value) => {
+                                        handleChange('firstname')(value)
+                                        setFname(value)
+                                    }}
+                                    onBlur={handleBlur('firstname')}
+                                    value={values.firstname}
+                            /> */}
                             <View>
                                 <TextInput
                                     style={styles.input}
                                     mode="flat"
                                     placeholder="Prénom"
                                     placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('firstname')}
+                                    onChangeText={(value) => {
+                                        handleChange('firstname')(value)
+                                        setFname(value)
+                                    }
+                                    }
+
                                     onBlur={handleBlur('firstname')}
                                     value={values.firstname}
                                 />
@@ -127,7 +159,11 @@ const UpdateTransaction = ({ navigation, route }) => {
                                     mode="flat"
                                     placeholder="Nom"
                                     placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('lastname')}
+                                    onChangeText={(value) => {
+
+                                        handleChange('lastname')(value)
+                                        setLname(value)
+                                    }}
                                     onBlur={handleBlur('lastname')}
                                     value={values.lastname}
                                 />
@@ -147,8 +183,9 @@ const UpdateTransaction = ({ navigation, route }) => {
                                 buttonStyle={styles.dropdown3BtnStyle}
                                 data={transactionType}
                                 value={values.type}
-                                onSelect={(selectedItem, index) => {
-                                    setType(selectedItem)
+                                onSelect={(value, selectedItem, index) => {
+/*                                     setType(selectedItem)
+ */                                    setTypeoftransaction(value)
                                 }}
                             />
                         </View>
@@ -165,8 +202,11 @@ const UpdateTransaction = ({ navigation, route }) => {
                                 buttonStyle={styles.dropdown3BtnStyle}
                                 data={title}
                                 value={values.category}
-                                onSelect={(selectedItem, index) => {
-                                    setCategory(selectedItem)
+                                onSelect={(value, selectedItem, index) => {
+
+/*                                     setCategory(selectedItem)(value)
+
+ */                                    setCat(value)
                                 }}
                             />
                         </View>
@@ -183,7 +223,10 @@ const UpdateTransaction = ({ navigation, route }) => {
                                     mode="flat"
                                     placeholder="Montant"
                                     placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('amount')}
+                                    onChangeText={(value) => {
+                                        handleChange('amount')(value)
+                                        setAmount(value)
+                                    }}
                                     onBlur={handleBlur('amount')}
                                     value={values.amount}
                                 />
@@ -202,7 +245,10 @@ const UpdateTransaction = ({ navigation, route }) => {
                                     mode="flat"
                                     placeholder="Commentaire"
                                     placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('comment')}
+                                    onChangeText={(value) => {
+                                        handleChange('comment')(value)
+                                        setComment(value)
+                                    }}
                                     onBlur={handleBlur('comment')}
                                     value={values.comment}
                                 />
@@ -219,9 +265,6 @@ const UpdateTransaction = ({ navigation, route }) => {
                     </View>
                 )}
             </Formik>
-            <ScrollView>
-                <View style={styles.center2}>
-                </View>
             </ScrollView>
         </View>
     );
@@ -316,19 +359,19 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
 
-    dropdown3BtnStyle: {
-        height: 50,
-        backgroundColor: '#68A7AD',
-        paddingHorizontal: 0,
-        borderRadius: 18,
-        borderColor: '#444',
-
-    },
-    dropdown1BtnTxtStyle: {
-        color: '#fcf5d9',
-        fontWeight: 'bold',
-        fontSize: 20,
-    }
+     dropdown3BtnStyle: {
+         height: 50,
+         backgroundColor: '#68A7AD',
+         paddingHorizontal: 0,
+         borderRadius: 18,
+         borderColor: '#444',
+ 
+     },
+     dropdown1BtnTxtStyle: {
+         color: '#fcf5d9',
+         fontWeight: 'bold',
+         fontSize: 20,
+     }
 });
 
 export default UpdateTransaction;

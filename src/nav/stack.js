@@ -1,24 +1,24 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNav from './tab'
-import AddTransaction from '../components/addTransaction'
-import TransactionsList from '../components/transactionslist';
-import UpdateTransaction from '../components/updateTransaction';
+import AddForm from '../components/AddForm'
+import UpdateForm from '../components/UpdateForm';
+import LoginScreen from '../components/ConnectLog/LoginScreen'
+import RegisterScreen from '../components/ConnectLog/RegisterScreen';
+import StackAuth from './stackAuth';
+
 const Stack = createNativeStackNavigator()
 const StackNav = () => {
 
   return (
-    <NavigationContainer>
 
-      <Stack.Navigator >
-        <Stack.Screen name="Accueil" component={TabNav} />
-        <Stack.Screen name="Ajout transaction" component={AddTransaction} />
+    <Stack.Navigator >
+      <Stack.Screen name="Accueil" component={TabNav} />
+      <Stack.Screen name="Ajout transaction" component={AddForm} />
+      <Stack.Screen name="Modif transaction" component={UpdateForm} />
+    </Stack.Navigator>
 
-        <Stack.Screen name="UpdateTransaction" component={UpdateTransaction} />
 
-      </Stack.Navigator>
-    </NavigationContainer>
 
   );
 }

@@ -93,7 +93,6 @@ const pushLastOpsInArray = (array) => {
 // SET Last Ops in arrayLastOps
 pushLastOpsInArray(arrayLastOps)
 
-console.log("arrayLastOps", arrayLastOps);
 const StoreLastOps = async (array) => {
     try {
         await AsyncStorage.setItem('lastOps', JSON.stringify(array))

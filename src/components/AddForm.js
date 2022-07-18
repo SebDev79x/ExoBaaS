@@ -106,13 +106,14 @@ const AddATransaction = ({ navigation, route }) => {
     }
     return (
         <View>
+            <ScrollView>
             <Formik
                 initialValues={{ firstname: '', lastname: '', typeTransaction: '', category: '', amount: '', comment: '' }}
                 validateOnMount={true}
                 onSubmit={(data, { resetForm }) => {
                     createExpense(data.firstname, data.lastname, type, category, data.amount, data.comment)
                     resetForm({ data })
-                    navigation.navigate('Liste transactions', { data: [...myTransactions, data] })
+                    navigation.navigate('Mes transactions', { data: [...myTransactions, data] })
                 }}
                 validationSchema={transactionValidationSchema}
             >
@@ -238,6 +239,7 @@ const AddATransaction = ({ navigation, route }) => {
                     </View>
                 )}
             </Formik>
+            </ScrollView>
         </View>
     );
 }

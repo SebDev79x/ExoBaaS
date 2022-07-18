@@ -2,88 +2,42 @@ import * as React from 'react';
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationEvents } from 'react-navigation';
+import RegisterScreen from './ConnectLog/RegisterScreen';
+import LoginScreen from './ConnectLog/LoginScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import StackAuth from '../nav/stackAuth';
+import StackNav from '../nav/stack';
 
-const HomeScreen = ({ navigation }) => {
-    const [mySolde, setSolde] = useState('')
-    const [lastOps, setLastOps] = useState([])
-/*     const GetData = async () => {
-        try {
-            await AsyncStorage.getItem('solde').then(element => setSolde(element))
-            // We have data!!
+const HomeScreenAuth = ({ navigation }) => {
 
-        } catch (err) {
-            // error reading value
-            console.log("erreur survenue", err);
-        }
-    }
-    const GetLastOperations = async () => {
-        try {
-            await AsyncStorage.getItem('lastOps').then(element => {
-                setLastOps(JSON.parse(element));
-            })
-        } catch (e) {
-            // error reading value
-        }
-    } */
+  
 
     return (
 
         <View style={styles.container}>
+            <Text>My auth screen</Text>
             <View>
                 <TouchableOpacity
-/*                     onPress={() => GetData()}
- */                    style={styles.btnSolde}
-
+                    onPress={() => {navigation.navigate('Inscription')}}
+                    style={styles.btnLastOps}
                 >
-                    <Text style={styles.textSolde}>Mon solde</Text>
+                    <Text style={styles.textLastOps}>Inscription</Text>
                 </TouchableOpacity>
-                <Text >{mySolde}</Text>
-
-            </View>
-            <View>
                 <TouchableOpacity
-/*                     onPress={() => GetLastOperations()}
- */                    style={styles.btnLastOps}
-
+                    onPress={() => {navigation.navigate('Login')}}
+                    style={styles.btnLastOps}
                 >
-                    <Text style={styles.textLastOps}>Dernières opérations</Text>
+                    <Text style={styles.textLastOps}>Connexion</Text>
                 </TouchableOpacity>
-
             </View>
-
             <View>
-          {/*       <FlatList
-                    data={lastOps}
-                    renderItem={({ item }) =>
-                        <View>
-                            <Text>ATTENTION : valeurs du fichier json</Text>
-
-                            <Text>Opération en date du {item.date}</Text>
-                            <Text>Montant : {item.amount}</Text>
-                            <Text>Catégorie : {item.category}</Text>
-                            <Text>Commentaire : {item.comments}</Text>
-                            <Text>_______________________</Text>
-                        </View>
-                    }
-                /> */}
-            </View>
-            <View style={styles.btns}>
-
-                <View>
-                    <TouchableOpacity
-                        style={styles.btnRegister}
-                        onPress={() => navigation.navigate('Ajout transaction')}
-
-                    >
-                        <Text style={styles.textRegister}>Ajout Transaction</Text>
-                    </TouchableOpacity>
-                </View>
             </View>
         </View>
-    );
-}
-
-const styles = StyleSheet.create({
+    )
+        
+}    
+        const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -174,4 +128,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default HomeScreenAuth;
