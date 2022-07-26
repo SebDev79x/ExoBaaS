@@ -21,7 +21,7 @@ const expenses = total_incomes_or_expenses(transactions,"Débit")
 
     return (
         <View>
-            <Text>Synthèse des data</Text>
+            <Text>SYNTHÈSE TRANSACTIONS</Text>
             <Text></Text>
             <Text>REVENUS : {incomes}</Text>
             <Text>DEPENSES : {expenses}</Text>

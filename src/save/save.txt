@@ -1,0 +1,41 @@
+// HOMESCREEN
+/*     const GetData = async () => {
+            try {
+                await AsyncStorage.getItem('solde').then(element => setSolde(element))
+                // We have data!!
+    
+            } catch (err) {
+                // error reading value
+                console.log("erreur survenue", err);
+            }
+        }
+        const GetLastOperations = async () => {
+            try {
+                await AsyncStorage.getItem('lastOps').then(element => {
+                    setLastOps(JSON.parse(element));
+                })
+            } catch (e) {
+                // error reading value
+            }
+        } */
+
+
+        DANS ONPRESS :
+
+        GetData()
+        GetLastOperations()
+
+        {/*       <FlatList
+                    data={lastOps}
+                    renderItem={({ item }) =>
+                        <View>
+                            <Text>ATTENTION : valeurs du fichier json</Text>
+
+                            <Text>Opération en date du {item.date}</Text>
+                            <Text>Montant : {item.amount}</Text>
+                            <Text>Catégorie : {item.category}</Text>
+                            <Text>Commentaire : {item.comments}</Text>
+                            <Text>_______________________</Text>
+                        </View>
+                    }
+                /> */}

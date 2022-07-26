@@ -9,15 +9,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator()
 const TabNav = () => {
-
+    /**<Tab.Screen name="Synthèse" component={Synthesis} /> */
     return (
         <Tab.Navigator>
-                        <Tab.Screen 
-                        
-                        screenOptions={{headerShown: false}}
-                        name="HomeScreen" component={HomeScreen} />
+            <Tab.Screen
 
-            <Tab.Screen name="Synthèse" component={Synthesis} />
+                screenOptions={{ headerShown: false }}
+                name="HomeScreen" component={HomeScreen} />
             <Tab.Screen name="Mes stats" component={Stats} />
             <Tab.Screen name="Mes transactions" component={MyTransactions} />
         </Tab.Navigator>
