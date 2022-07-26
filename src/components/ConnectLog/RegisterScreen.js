@@ -145,13 +145,11 @@ const RegisterScreen = ({ navigation }) => {
                 validateOnMount={true}
                 onSubmit={(data) => {
                     createUser(data.firstname, data.lastname, data.email, data.password, data.password2)
-                    /*   setEmail(data.email)
-                      setPassword(data.password) */
+                    
                     setEmail(data.email)
                     setPassword(data.password)
 
-/*                     console.log(data, "data");
- */                    navigation.navigate('Login', { data: [...users, data], dataUser: data })
+                    navigation.navigate('Login', { data: [...users, data], dataUser: data })
 /*                 update_document_transaction({ ...data }, "transactions", id)
  */            }}
                 validationSchema={registerValidationSchema}

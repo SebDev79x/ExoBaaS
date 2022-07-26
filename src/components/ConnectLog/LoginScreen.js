@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation, route }) => {
                 .then((userCredential) => {
                     // Signed in 
                     const user = userCredential.user;
-                    console.log("user",user);
+                    console.log("user", user);
                     console.log("youpi utilisateur connecté");
                 })
                 .catch((error) => {
@@ -55,30 +55,30 @@ const LoginScreen = ({ navigation, route }) => {
             console.log("erreur try catch handlelogin", err);
         }
     }
-  /*   useEffect(() => {
+    useEffect(() => {
         onHandleLogin()
         console.log("user is logged via firebase");
-    },[]) */
-/*     setTimeout(() => {
-        const auth = getAuth();
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-              // User is signed in, see docs for a list of available properties
-              // https://firebase.google.com/docs/reference/js/firebase.User
-              const uid = user.uid;
-              console.log("utilisateur reconnu");
-              // ...
-            } else {
-              console.log("utilisateur NON reconnu");
-            }
-          });
-    }, 10000); */
+    }, [])
+    /*     setTimeout(() => {
+            const auth = getAuth();
+    
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                  // User is signed in, see docs for a list of available properties
+                  // https://firebase.google.com/docs/reference/js/firebase.User
+                  const uid = user.uid;
+                  console.log("utilisateur reconnu");
+                  // ...
+                } else {
+                  console.log("utilisateur NON reconnu");
+                }
+              });
+        }, 10000); */
     /* console.log("route.params tout court", route.params);
     console.log("route.params.data", route.params.data);
     console.log("route.params.dataUser", route.params.dataUser); */
 
-    
+
     return (<View>
         <Formik
             initialValues={{
@@ -150,7 +150,8 @@ const LoginScreen = ({ navigation, route }) => {
                     </View>
                 </View>
             )}
-        </Formik>    </View>)
+        </Formik>
+    </View>)
 }
 const styles = StyleSheet.create({
     container: {

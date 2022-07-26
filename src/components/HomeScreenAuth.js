@@ -16,10 +16,10 @@ const HomeScreenAuth = ({ navigation },props) => {
     return (
 
         <View style={styles.container}>
-            <ImageBackGround
+          {/*   <ImageBackGround
             urlToInsert = 'https://storyset.com/illustration/sun-rise/pana'
             path={props.urlToInsert}
-            />
+            /> */}
             <Text>My auth screen</Text>
             <View>
                 <TouchableOpacity

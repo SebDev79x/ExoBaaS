@@ -12,7 +12,10 @@ const TabNav = () => {
 
     return (
         <Tab.Navigator>
-                        <Tab.Screen name="HomeScreen" component={HomeScreen} />
+                        <Tab.Screen 
+                        
+                        screenOptions={{headerShown: false}}
+                        name="HomeScreen" component={HomeScreen} />
 
             <Tab.Screen name="Synthèse" component={Synthesis} />
             <Tab.Screen name="Mes stats" component={Stats} />

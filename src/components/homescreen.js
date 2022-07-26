@@ -1,58 +1,122 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, ImageBackground, FlatList, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+/* import AsyncStorage from '@react-native-async-storage/async-storage';
+ */
+import { Dimensions } from 'react-native';
+
 
 const HomeScreen = ({ navigation }) => {
+
     const [mySolde, setSolde] = useState('')
     const [lastOps, setLastOps] = useState([])
-/*     const GetData = async () => {
-        try {
-            await AsyncStorage.getItem('solde').then(element => setSolde(element))
-            // We have data!!
 
-        } catch (err) {
-            // error reading value
-            console.log("erreur survenue", err);
+    /*     const GetData = async () => {
+            try {
+                await AsyncStorage.getItem('solde').then(element => setSolde(element))
+                // We have data!!
+    
+            } catch (err) {
+                // error reading value
+                console.log("erreur survenue", err);
+            }
+        }
+        const GetLastOperations = async () => {
+            try {
+                await AsyncStorage.getItem('lastOps').then(element => {
+                    setLastOps(JSON.parse(element));
+                })
+            } catch (e) {
+                // error reading value
+            }
+        } */
+
+/*     const ImageToDisplay = (string) => {
+        if ((string.at(0) + string.at(1)) == 'ht') {
+            console.log("HTTP OK", { uri: string });
+            return { uri: string }
+        } else {
+            return youpi = () => {
+                require(string)
+            }
         }
     }
-    const GetLastOperations = async () => {
-        try {
-            await AsyncStorage.getItem('lastOps').then(element => {
-                setLastOps(JSON.parse(element));
-            })
-        } catch (e) {
-            // error reading value
+    ImageToDisplay('https://www.journaldugeek.com/2021/04/22/le-xbox-live-gold-nest-plus-obligatoire-pour-les-jeux-free-to-play/') */
+//require(PATH+string)
+    const ImageBG = (props) => {
+        const ImageToDisplay = (string) => {
+            ((string.at(0) + string.at(1)) == 'ht') ?  { uri: string } :  ''
+                
+            
         }
-    } */
+        const {someImage} = props
+        return (
+            <View>
+                <Image
+                    source={ ImageToDisplay(someImage)}
+                    style={styles.imageBG}
+                >
+                </Image>
+            </View>
+        );
+    }
+        const PATH = require('../../assets/')
+        const teststringpic = 'sunset.png'
+    console.log("PATH",PATH+teststringpic);
 
     return (
 
         <View style={styles.container}>
-            <View>
-                <TouchableOpacity
+            <ScrollView>
+                <ImageBG
+                someImage= 'https://www.journaldugeek.com/content/uploads/2021/03/xbox-1.jpg'
+                />
+                {/*      <View>
+            <Image source={require('../../assets/sunset.png')}
+                    style={styles.imageBG} />
+            </View> */}
+                <View style={styles.superheight}>
+                   {/*  <View >
+
+                        <Image
+                            source={{ uri: 'https://www.journaldugeek.com/content/uploads/2021/03/xbox-1.jpg' }}
+                            style={styles.imageBG}
+                        />
+
+                    </View> */}
+                    {/* <View >
+
+
+                        <Image
+                            source={require('../../assets/sunset.png')}
+                            style={styles.imageBG}
+                        />
+                    </View> */}
+                </View>
+                <View>
+                    <TouchableOpacity
 /*                     onPress={() => GetData()}
  */                    style={styles.btnSolde}
 
-                >
-                    <Text style={styles.textSolde}>Mon solde</Text>
-                </TouchableOpacity>
-                <Text >{mySolde}</Text>
+                    >
+                        <Text style={styles.textSolde}>Mon solde</Text>
+                    </TouchableOpacity>
+                    <Text>MON SOLDE EST DE : {mySolde}</Text>
 
-            </View>
-            <View>
-                <TouchableOpacity
+                </View>
+                <View>
+                    <TouchableOpacity
 /*                     onPress={() => GetLastOperations()}
  */                    style={styles.btnLastOps}
 
-                >
-                    <Text style={styles.textLastOps}>Dernières opérations</Text>
-                </TouchableOpacity>
+                    >
+                        <Text style={styles.textLastOps}>Dernières opérations</Text>
+                    </TouchableOpacity>
 
-            </View>
+                </View>
 
-            <View>
-          {/*       <FlatList
+                <View>
+                    {/*       <FlatList
                     data={lastOps}
                     renderItem={({ item }) =>
                         <View>
@@ -66,19 +130,20 @@ const HomeScreen = ({ navigation }) => {
                         </View>
                     }
                 /> */}
-            </View>
-            <View style={styles.btns}>
-
-                <View>
-                    <TouchableOpacity
-                        style={styles.btnRegister}
-                        onPress={() => navigation.navigate('Ajout transaction')}
-
-                    >
-                        <Text style={styles.textRegister}>Ajout Transaction</Text>
-                    </TouchableOpacity>
                 </View>
-            </View>
+                <View style={styles.btns}>
+
+                    <View>
+                        <TouchableOpacity
+                            style={styles.btnRegister}
+                            onPress={() => navigation.navigate('Ajout transaction')}
+
+                        >
+                            <Text style={styles.textRegister}>Ajout Transaction</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </ScrollView>
         </View>
     );
 }
@@ -91,6 +156,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-evenly',
 
+    },
+
+    imageBG: {
+
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+        width: 400,
+        height: 400
     },
     btns: {
         flexDirection: 'row',

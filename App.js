@@ -16,7 +16,7 @@ export default function App() {
   return (
     // En fonction du statut de l'utilisateur, switch de la stack
     <NavigationContainer>
-      {!isUserLoggedin ? <StackAuth /> : <StackNav />}
+      {isUserLoggedin ? <StackAuth /> : <StackNav />}
 
     </NavigationContainer>);
 }
