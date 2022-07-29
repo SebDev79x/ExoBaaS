@@ -21,66 +21,47 @@ const loginValidationSchema = yup.object().shape({
 });
 
 
-const LoginScreen = ({ navigation, route }) => {
+const LoginScreen = ({ navigation }) => {
+/*     const auth = getAuth();
+    const user = auth.currentUser;
+    console.log("LOGINSCREEN USEEFFECT auth.currentUser",user);
 
-    if (!route.params) {
-        console.log('Aucun param', route.params);
-        var noInfoUser = ''
-    }
-    if (route.params) {
-        console.log('Y a des params', route.params);
-        var infoUser = route.params.dataUser
-
-    }
-    const [email, setEmail] = useState(infoUser ? route.params.dataUser.email : noInfoUser)
-    const [password, setPassword] = useState(infoUser ? route.params.dataUser.password : noInfoUser)
+    const [email, setEmail] = useState(null)
+    const [password, setPassword] = useState(null)
     const [isUserLoggedin, setIsUserLoggedIn] = useState(false)
-    console.log("email", email);
-    console.log("password", password);
     const onHandleLogin = async () => {
         try {
-            const auth = getAuth();
+            console.log(email,password,'email & password dans bloc TRY/CATCH avant AUTH');
             await signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Signed in 
-                    const user = userCredential.user;
-                    console.log("user", user);
-                    console.log("youpi utilisateur connecté");
+                    if(userCredential){
+ // Signed in 
+ const user = userCredential.user;
+ console.log("LOGINSCREEN user",user);
+ navigation.navigate('TestScreen')
+ setIsUserLoggedIn(true)
+                    }else{
+                        console.log("PAS DE CONNEXION");
+                    }
+                   
+
                 })
                 .catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
                 });
         } catch (err) {
-            console.log("erreur try catch handlelogin", err);
+            console.log("ERREUR TRY CATCH LOGINSCREEN", err);
         }
     }
     useEffect(() => {
-        onHandleLogin()
-        console.log("user is logged via firebase");
-    }, [])
-    /*     setTimeout(() => {
-            const auth = getAuth();
-    
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                  // User is signed in, see docs for a list of available properties
-                  // https://firebase.google.com/docs/reference/js/firebase.User
-                  const uid = user.uid;
-                  console.log("utilisateur reconnu");
-                  // ...
-                } else {
-                  console.log("utilisateur NON reconnu");
-                }
-              });
-        }, 10000); */
-    /* console.log("route.params tout court", route.params);
-    console.log("route.params.data", route.params.data);
-    console.log("route.params.dataUser", route.params.dataUser); */
-
-
+if(isUserLoggedin){
+console.log('YOUPIPIPIPIPI');
+}
+        
+    }, []) */
     return (<View>
-        <Formik
+        {/* <Formik
             initialValues={{
 
                 email: '',
@@ -90,8 +71,9 @@ const LoginScreen = ({ navigation, route }) => {
             onSubmit={(data) => {
                 setEmail(data.email)
                 setPassword(data.password)
+                console.log("data.email & data.password après submit",data.email,data.password,"email & password après submit",email, password);
+                
                 onHandleLogin()
-                setIsUserLoggedIn(true)
 
             }}
             validationSchema={loginValidationSchema}
@@ -150,7 +132,8 @@ const LoginScreen = ({ navigation, route }) => {
                     </View>
                 </View>
             )}
-        </Formik>
+        </Formik> */}
+        <Text>SUPER LOGIN</Text>
     </View>)
 }
 const styles = StyleSheet.create({

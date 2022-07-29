@@ -3,7 +3,7 @@ import { db } from '../../database/config'
 import { useState, useEffect, createContext, useContext } from 'react';
 import { doc, setDoc, collection, onSnapshot, deleteDoc,updateDoc } from 'firebase/firestore';
 
-
+// Mise à jour d'un document (user,transaction...)
  const update_document_transaction = (value,collectionNameString,id) => {
     const myDoc = doc(db, collectionNameString, id)
 

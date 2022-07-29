@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
-import { StyleSheet, Text, View, Button, Image, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, ActivityIndicator, Text, View, Button, Image, TextInput, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
@@ -55,8 +55,7 @@ const RegisterScreen = ({ navigation }) => {
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')
     const [users, setUsers] = useState('')
-
-
+    const [loading, setLoading] = useState(false)
     /* useEffect(() => {
         let isMounted = true;
         const unsub = onSnapshot(collection(db, "users"), (querySnapshot) => {
@@ -90,193 +89,217 @@ const RegisterScreen = ({ navigation }) => {
         return Date.now()
     }
     // Ajout/Création d'une transaction
-    const createUser = (firstnameParam, lastnameParam, emailParam, passwordParam, password2Param) => {
-        const myDoc = doc(db, "users", `${randomNumberId()}`)
-        const docData = {
-            "firstname": firstnameParam,
-            "lastname": lastnameParam,
-            "email": emailParam,
-            "password": passwordParam,
-            "password2": password2Param,
-        }
-        setDoc(myDoc, docData)
-            .then((element) => {
-                console.log(element, "USER");
-            })
-            .catch((err) => {
-                console.log("youpi une erreur !", err);
-            })
-    }
+    /*   const createUser = (firstnameParam, lastnameParam, emailParam, passwordParam, password2Param) => {
+          const myDoc = doc(db, "users", `${randomNumberId()}`)
+          const docData = {
+              "firstname": firstnameParam,
+              "lastname": lastnameParam,
+              "email": emailParam,
+              "password": passwordParam,
+              "password2": password2Param,
+          }
+          setDoc(myDoc, docData)
+              .then((element) => {
+                  console.log(element, "ELEMENT");
+              })
+              .catch((err) => {
+                  console.log("youpi une erreur !", err);
+              })
+      } */
 
     const onHandleRegister = async () => {
         try {
             const auth = getAuth();
-            console.log(auth, "auth");
             await createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user
-
-                    console.log("userCredentials", userCredential);
-                    console.log("user", user);
+                // Si le nouveau compte a été créé, l'utilisateur est automatiquement connecté
+                // https://firebase.google.com/docs/auth/web/password-auth
+                .then((e) => {
+                    const user = e.user
+                    console.log(user, "user après THEN");
                 })
-                .catch((error) => console.log(error, "erreur dans usercredentials"))
+                .catch((error) => console.log(error, "REGISTERSCREEN then/catch"))
         } catch (err) {
-            console.log("erreur dans try catch credentials", err);
+            console.log("REGISTERSCREEN try/catch", err);
         }
     }
+    console.log("EN DEHORS DU SUBMIT", email, password);
+    if (email && password !== '') {
+        onHandleRegister()
+    }
 
-    useEffect(() => {
-        if (email && password) {
-            onHandleRegister(email, password)
+    /* const getData = async (email,password) =>{
+        if(email && password !== ''){
+           await 
         }
+    } */
+    //voir pour set items via useeffect et appeler ensuite la fonction
+    /* useEffect(() => {
+        console.log("email && password",email, password);
+       const you = getData()
+        if (email && password) {
+            console.log("YOUPIIIIIIIIII!!!!");
+            
+        }
+        
+    },[]) */
+    return (loading
+        ? <ActivityIndicator
+            size="large"
+            color="#bc2b78"
+            //add extra styling
 
-    })
-    return (<View>
-        <ScrollView style={styles.scrollView}>
+            style={styles.activityIndicator} />
+        : <View>
+            <ScrollView style={styles.scrollView}>
 
-            <Formik
-                initialValues={{
-                    firstname: firstname,
-                    lastname: lastname,
-                    email: email,
-                    password: password,
-                    password2: password2
-                }}
-                validateOnMount={true}
-                onSubmit={(data) => {
-                    createUser(data.firstname, data.lastname, data.email, data.password, data.password2)
-                    
-                    setEmail(data.email)
-                    setPassword(data.password)
+                <Formik
+                    initialValues={{
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        password: password,
+                        password2: password2
+                    }}
+                    validateOnMount={true}
+                    onSubmit={(data) => {
+/*                         createUser(data.firstname, data.lastname, data.email, data.password, data.password2)
+ */                        setEmail(data.email)
+                        setPassword(data.password)
+                        setLoading(true)
+                        console.log("UTILISATEUR data.", data.email, data.password,);
 
-                    navigation.navigate('Login', { data: [...users, data], dataUser: data })
-/*                 update_document_transaction({ ...data }, "transactions", id)
+                        console.log("UTILISATEUR after SET", email, password);
+
+
+
+/*                     navigation.navigate('Login', { data: [...users, data], dataUser: data })
+ *//*                 update_document_transaction({ ...data }, "transactions", id)
  */            }}
-                validationSchema={registerValidationSchema}
-            >
-                {({ handleChange, handleBlur, handleSubmit, values, touched, isValid, errors }) => (
-                    <View>
+                    validationSchema={registerValidationSchema}
+                >
+                    {({ handleChange, handleBlur, handleSubmit, values, touched, isValid, errors }) => (
                         <View>
-                            <View style={styles.center}>
-                                <Text style={styles.label}>Prénom</Text>
-                            </View>
                             <View>
-                                <TextInput
-                                    style={styles.input}
-                                    mode="flat"
-                                    placeholder="Prénom"
-                                    placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('firstname')
+                                <View style={styles.center}>
+                                    <Text style={styles.label}>Prénom</Text>
+                                </View>
+                                <View>
+                                    <TextInput
+                                        style={styles.input}
+                                        mode="flat"
+                                        placeholder="Prénom"
+                                        placeholderTextColor={'grey'}
+                                        onChangeText={handleChange('firstname')
 
-                                    }
+                                        }
 
 
-                                    onBlur={handleBlur('firstname')}
-                                    value={values.firstname}
-                                />
+                                        onBlur={handleBlur('firstname')}
+                                        value={values.firstname}
+                                    />
+                                </View>
+                                {(touched.firstname && errors.firstname) && <Text style={styles.errors}>{errors.firstname}</Text>}
                             </View>
-                            {(touched.firstname && errors.firstname) && <Text style={styles.errors}>{errors.firstname}</Text>}
-                        </View>
-                        <View style={{ height: 30 }}></View>
-
-                        <View>
-                            <View style={styles.center}>
-                                <Text style={styles.label}>Nom</Text>
-                            </View>
-                            <View>
-                                <TextInput
-                                    style={styles.input}
-                                    mode="flat"
-                                    placeholder="Nom"
-                                    placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('lastname')}
-
-                                    onBlur={handleBlur('lastname')}
-                                    value={values.lastname}
-                                />
-                            </View>
-                            {(touched.lastname && errors.lastname) && <Text style={styles.errors}>{errors.lastname}</Text>}
-                        </View>
-                        <View style={{ height: 30 }}></View>
-                        <View>
-                            <View style={styles.center}>
-                                <Text style={styles.label}>Email</Text>
-                            </View>
-                            <View>
-                                <TextInput
-                                    style={styles.input}
-                                    mode="flat"
-                                    placeholder="Email"
-                                    placeholderTextColor={'grey'}
-                                    onChangeText={
-
-                                        handleChange('email')
-                                    }
-
-
-
-
-
-                                    onBlur={handleBlur('email')}
-                                    value={values.email}
-                                />
-                            </View>
-                            {(touched.email && errors.email) && <Text style={styles.errors}>{errors.email}</Text>}
-                        </View>
-                        <View>
-                            <View style={styles.center}>
-                                <Text style={styles.label}>Mot de passe</Text>
-                            </View>
-                            <View>
-                                <TextInput
-                                    style={styles.input}
-                                    mode="flat"
-                                    placeholder="Mot de passe"
-                                    placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('password')
-                                    }
-
-                                    onBlur={handleBlur('password')}
-                                    value={values.password}
-                                />
-                            </View>
-                            {(touched.password && errors.password) && <Text style={styles.errors}>{errors.password}</Text>}
-                        </View>
-                        <View style={{ height: 30 }}></View>
-                        <View>
-                            <View style={styles.center}>
-                                <Text style={styles.label}>Confirmation</Text>
-                            </View>
-                            <View>
-                                <TextInput
-                                    style={styles.input}
-                                    mode="flat"
-                                    placeholder="Mot de passe"
-                                    placeholderTextColor={'grey'}
-                                    onChangeText={handleChange('password2')}
-
-                                    onBlur={handleBlur('password2')}
-                                    value={values.password2}
-                                />
-                            </View>
-                            {(touched.password2 && errors.password2) && <Text style={styles.errors}>{errors.password2}</Text>}
-                        </View>
-
-                        <View>
                             <View style={{ height: 30 }}></View>
+
+                            <View>
+                                <View style={styles.center}>
+                                    <Text style={styles.label}>Nom</Text>
+                                </View>
+                                <View>
+                                    <TextInput
+                                        style={styles.input}
+                                        mode="flat"
+                                        placeholder="Nom"
+                                        placeholderTextColor={'grey'}
+                                        onChangeText={handleChange('lastname')}
+
+                                        onBlur={handleBlur('lastname')}
+                                        value={values.lastname}
+                                    />
+                                </View>
+                                {(touched.lastname && errors.lastname) && <Text style={styles.errors}>{errors.lastname}</Text>}
+                            </View>
+                            <View style={{ height: 30 }}></View>
+                            <View>
+                                <View style={styles.center}>
+                                    <Text style={styles.label}>Email</Text>
+                                </View>
+                                <View>
+                                    <TextInput
+                                        style={styles.input}
+                                        mode="flat"
+                                        placeholder="Email"
+                                        placeholderTextColor={'grey'}
+                                        onChangeText={
+
+                                            handleChange('email')
+                                        }
+
+
+
+
+
+                                        onBlur={handleBlur('email')}
+                                        value={values.email}
+                                    />
+                                </View>
+                                {(touched.email && errors.email) && <Text style={styles.errors}>{errors.email}</Text>}
+                            </View>
+                            <View>
+                                <View style={styles.center}>
+                                    <Text style={styles.label}>Mot de passe</Text>
+                                </View>
+                                <View>
+                                    <TextInput
+                                        style={styles.input}
+                                        mode="flat"
+                                        placeholder="Mot de passe"
+                                        placeholderTextColor={'grey'}
+                                        onChangeText={handleChange('password')
+                                        }
+
+                                        onBlur={handleBlur('password')}
+                                        value={values.password}
+                                    />
+                                </View>
+                                {(touched.password && errors.password) && <Text style={styles.errors}>{errors.password}</Text>}
+                            </View>
+                            <View style={{ height: 30 }}></View>
+                            <View>
+                                <View style={styles.center}>
+                                    <Text style={styles.label}>Confirmation</Text>
+                                </View>
+                                <View>
+                                    <TextInput
+                                        style={styles.input}
+                                        mode="flat"
+                                        placeholder="Mot de passe"
+                                        placeholderTextColor={'grey'}
+                                        onChangeText={handleChange('password2')}
+
+                                        onBlur={handleBlur('password2')}
+                                        value={values.password2}
+                                    />
+                                </View>
+                                {(touched.password2 && errors.password2) && <Text style={styles.errors}>{errors.password2}</Text>}
+                            </View>
+
+                            <View>
+                                <View style={{ height: 30 }}></View>
+                            </View>
+                            <View style={styles.center2}>
+                                <TouchableOpacity
+                                    style={styles.btnPass}
+                                    onPress={handleSubmit} title="Submit">
+                                    <Text style={styles.textPass}>Valider</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        <View style={styles.center2}>
-                            <TouchableOpacity
-                                style={styles.btnPass}
-                                onPress={handleSubmit} title="Submit">
-                                <Text style={styles.textPass}>Valider</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                )}
-            </Formik>
-        </ScrollView>
-    </View>
+                    )}
+                </Formik>
+            </ScrollView>
+        </View>
     );
 
 }
@@ -286,6 +309,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#8CC0DE',
         alignItems: 'center',
         justifyContent: 'space-evenly'
+    },
+    activityIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 80
     },
     input: {
     /*     height: 40,

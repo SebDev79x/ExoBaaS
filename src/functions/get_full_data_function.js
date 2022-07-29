@@ -4,7 +4,7 @@ import { useState, useEffect, createContext, useContext } from 'react';
 import { doc, setDoc, collection, onSnapshot, deleteDoc, updateDoc } from 'firebase/firestore';
 
 
-// Composant Liste des transactions
+// Liste d'une collection donnée
 const get_full_data = (collectionName, setMethod) => {
     let isMounted = true;
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dimensions } from "react-native";
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity,ImageBackground } from 'react-native';
 import {
     LineChart
 } from 'react-native-chart-kit'
@@ -143,7 +143,12 @@ const Stats = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground
+        source={require('../../assets/beach.jpg')}
+        style={styles.container}
+        blurRadius={40}
+  >
+        <View >
             <Text>
                 Courbe DÉPENSES :
             </Text>
@@ -155,9 +160,9 @@ const Stats = ({ navigation }) => {
                 xAxisLabel={''}
                 yAxisLabel={''}
                 chartConfig={{
-                    backgroundColor: '#e26a00',
-                    backgroundGradientFrom: '#fb8c00',
-                    backgroundGradientTo: '#ffa726',
+                    
+                    backgroundGradientFrom: 'black',
+                    backgroundGradientTo: 'cyan',
                     decimalPlaces: 2, // optional, defaults to 2dp
                     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                     style: {
@@ -197,6 +202,8 @@ const Stats = ({ navigation }) => {
                 }}
             />
         </View>
+        </ImageBackground>
+
     );
 }
 

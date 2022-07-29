@@ -7,6 +7,7 @@ import { Dimensions } from 'react-native';
 import { total_incomes_or_expenses } from '../functions/calculations';
 import { balance } from '../functions/calculations';
 import get_full_data from '../functions/get_full_data_function'
+import { getAuth, signOut ,onAuthStateChanged } from "firebase/auth";
 
 const HomeScreen = ({ navigation }) => {
     const [mySolde, setSolde] = useState('')
@@ -24,13 +25,28 @@ const HomeScreen = ({ navigation }) => {
     const incomes = total_incomes_or_expenses(transactions, "Crédit")
     const expenses = total_incomes_or_expenses(transactions, "Débit")
 
+    const auth = getAuth();
+    
+    const logout = () =>{
+        signOut(auth).then(() => {
+            // Sign-out successful.
+            console.log("DÉCONNECTÉ CARPENTIER !!!");
+            const user = auth.currentUser;
+console.log("HOMESCREEN LOGOUT auth.currentUser",user);
+          }).catch((error) => {
+            // An error happened.
+            console.log("HOMESCREEN erreur",error);
 
+          });
+    }
+    const user = auth.currentUser;
+    console.log("HOMESCREEN en dehors du scope LOGOUT",user);
 
     return (
         <ImageBackground
-        source={require('../../assets/sunset.png')}
+        source={require('../../assets/beach.jpg')}
         style={styles.container}
-        blurRadius={30}
+        blurRadius={40}
   >
         <View style={styles.container}>
 <View style={styles.test}>
@@ -62,6 +78,15 @@ const HomeScreen = ({ navigation }) => {
 
 {/*                 </View>
  */}</View>
+        </View>
+        <View>
+            <Text>LOG OUT TEST</Text>
+            <TouchableOpacity
+                        style={styles.btnRegister}
+                        onPress={() => logout()}
+                    >
+                        <Text style={styles.textRegister}>DÉCO</Text>
+                    </TouchableOpacity>
         </View>
         </ImageBackground>
 

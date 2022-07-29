@@ -1,35 +1,27 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, FlatList } from 'react-native';
-import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationEvents } from 'react-navigation';
-import RegisterScreen from './ConnectLog/RegisterScreen';
-import LoginScreen from './ConnectLog/LoginScreen';
-import { NavigationContainer } from '@react-navigation/native';
-import StackAuth from '../nav/stackAuth';
-import StackNav from '../nav/stack';
-import ImageBackGround from './ImageBackGround';
-const HomeScreenAuth = ({ navigation },props) => {
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-  
+
+const HomeScreenAuth = ({ navigation }, props) => {
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    console.log("HSAuth auth.currentUser", user);
 
     return (
 
         <View style={styles.container}>
-          {/*   <ImageBackGround
-            urlToInsert = 'https://storyset.com/illustration/sun-rise/pana'
-            path={props.urlToInsert}
-            /> */}
             <Text>My auth screen</Text>
             <View>
                 <TouchableOpacity
-                    onPress={() => {navigation.navigate('Inscription')}}
+                    onPress={() => { navigation.navigate('Inscription') }}
                     style={styles.btnLastOps}
                 >
                     <Text style={styles.textLastOps}>Inscription</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => {navigation.navigate('Login')}}
+                    onPress={() => { navigation.navigate('Login') }}
                     style={styles.btnLastOps}
                 >
                     <Text style={styles.textLastOps}>Connexion</Text>
@@ -39,13 +31,11 @@ const HomeScreenAuth = ({ navigation },props) => {
             </View>
         </View>
     )
-        
-}    
-        const styles = StyleSheet.create({
+}
+
+const styles = StyleSheet.create({
     container: {
         flex: 1,
-       /*  backgroundColor: '#fff',
-        backgroundColor: '#FAF0D7', */
         alignItems: 'center',
         justifyContent: 'space-evenly',
 
@@ -60,27 +50,17 @@ const HomeScreenAuth = ({ navigation },props) => {
         height: 200,
         resizeMode: 'contain'
     },
-    /*   btns: {
-          justifyContent: 'center',
-          alignItems: 'center',
-      }, */
     alignAsARow: {
         flexDirection: 'row'
     },
-
     btnConnection: {
         padding: 10,
-
         backgroundColor: '#306ec2',
-
-        /* '#306ec2' */
-        backgroundColor: '#FFD9C0',
         padding: 10,
         width: 150,
         alignItems: 'center',
         marginBottom: 15,
         borderRadius: 10
-
     },
     btnRegister: {
         padding: 10,
@@ -104,7 +84,6 @@ const HomeScreenAuth = ({ navigation },props) => {
     },
     btnSolde: {
         padding: 10,
-
         backgroundColor: '#a7b3db',
         padding: 10,
         width: 150,

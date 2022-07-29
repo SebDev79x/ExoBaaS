@@ -1,4 +1,3 @@
-
 import { db } from '../../database/config'
 import { doc, setDoc, collection, onSnapshot, deleteDoc,updateDoc } from 'firebase/firestore';
 
