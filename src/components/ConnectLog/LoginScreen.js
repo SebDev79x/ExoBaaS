@@ -22,46 +22,45 @@ const loginValidationSchema = yup.object().shape({
 
 
 const LoginScreen = ({ navigation }) => {
-/*     const auth = getAuth();
-    const user = auth.currentUser;
-    console.log("LOGINSCREEN USEEFFECT auth.currentUser",user);
+    const [loading, setLoading] = useState(false)
 
+    const auth = getAuth();
+    const user = auth.currentUser;
     const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
     const [isUserLoggedin, setIsUserLoggedIn] = useState(false)
-    const onHandleLogin = async () => {
-        try {
-            console.log(email,password,'email & password dans bloc TRY/CATCH avant AUTH');
-            await signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    if(userCredential){
- // Signed in 
- const user = userCredential.user;
- console.log("LOGINSCREEN user",user);
- navigation.navigate('TestScreen')
- setIsUserLoggedIn(true)
-                    }else{
-                        console.log("PAS DE CONNEXION");
-                    }
-                   
+    const onHandleLogin = async (emailParam, passwordParam) => {
+        /* try { */
+        console.log(emailParam, passwordParam, 'email & password dans bloc TRY/CATCH avant AUTH');
+        await signInWithEmailAndPassword(auth, emailParam, passwordParam)
+            .then((userCredential) => {
+                if (userCredential) {
+                    // Signed in 
+                    const user = userCredential.user;
+                    console.log("LOGINSCREEN user", user);
+                    setIsUserLoggedIn(true)
+                } else {
+                    console.log("PAS DE CONNEXION");
+                }
 
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                });
-        } catch (err) {
-            console.log("ERREUR TRY CATCH LOGINSCREEN", err);
-        }
+
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+            });
+        /*  } catch (err) {
+             console.log("ERREUR TRY CATCH LOGINSCREEN", err);
+         } */
     }
     useEffect(() => {
-if(isUserLoggedin){
-console.log('YOUPIPIPIPIPI');
-}
-        
-    }, []) */
+        if (isUserLoggedin) {
+            console.log('YOUPIPIPIPIPI');
+        }
+
+    }, [])
     return (<View>
-        {/* <Formik
+        {<Formik
             initialValues={{
 
                 email: '',
@@ -71,9 +70,12 @@ console.log('YOUPIPIPIPIPI');
             onSubmit={(data) => {
                 setEmail(data.email)
                 setPassword(data.password)
-                console.log("data.email & data.password après submit",data.email,data.password,"email & password après submit",email, password);
-                
-                onHandleLogin()
+                setLoading(true)
+                console.log("data.email & data.password après submit", data.email, data.password, "email & password après submit", email, password);
+                setLoading(true)
+
+
+                onHandleLogin(data.email, data.password)
 
             }}
             validationSchema={loginValidationSchema}
@@ -132,7 +134,7 @@ console.log('YOUPIPIPIPIPI');
                     </View>
                 </View>
             )}
-        </Formik> */}
+        </Formik>}
         <Text>SUPER LOGIN</Text>
     </View>)
 }

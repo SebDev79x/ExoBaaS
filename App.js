@@ -18,6 +18,7 @@ import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine'
 import { faFileInvoiceDollar } from '@fortawesome/free-solid-svg-icons/faFileInvoiceDollar'
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import TopBar from './Top/TopBar'
 library.add(fab, faSquareCheck, faSearch, faEye, faTrash, faHouse, faChartLine, faFileInvoiceDollar)
 
 
@@ -43,7 +44,7 @@ export default function App() {
   if (initializing) {
     return null
   } */
-/*   const checkIfUserIsLogged = () =>{
+  const checkIfUserIsLogged = () =>{
     const auth = getAuth();
     const user = auth.currentUser;
 console.log("APP auth.currentUser",user);
@@ -59,22 +60,23 @@ console.log("APP auth.currentUser",user);
         // User is signed out
         setIsUserLoggedin(false)
   
-        console.log("APP non connecté");
+        console.log("APP user non connecté");
       }
     });
   }
-  checkIfUserIsLogged() */
+  checkIfUserIsLogged()
 
   
-  useEffect(()=>{
+ /*  useEffect(()=>{
     
-  })
+  }) */
   return (
     // En fonction du statut de l'utilisateur, switch de la stack
 <SafeAreaProvider>
     <PaperProvider>
-      <NavigationContainer>
+    <TopBar/>
 
+      <NavigationContainer>
         {isUserLoggedin == true ? <StackNav /> : <StackAuth />}
 
       </NavigationContainer>

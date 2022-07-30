@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
 
 const HomeScreenAuth = ({ navigation }, props) => {
 
@@ -10,26 +9,32 @@ const HomeScreenAuth = ({ navigation }, props) => {
     console.log("HSAuth auth.currentUser", user);
 
     return (
-
-        <View style={styles.container}>
-            <Text>My auth screen</Text>
-            <View>
-                <TouchableOpacity
-                    onPress={() => { navigation.navigate('Inscription') }}
-                    style={styles.btnLastOps}
-                >
-                    <Text style={styles.textLastOps}>Inscription</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => { navigation.navigate('Login') }}
-                    style={styles.btnLastOps}
-                >
-                    <Text style={styles.textLastOps}>Connexion</Text>
-                </TouchableOpacity>
+        <ImageBackground
+            source={require('../../../assets/beach.jpg')}
+            style={styles.container}
+            blurRadius={40}
+        >
+            <View style={styles.container}>
+                <View>
+                    <TouchableOpacity
+                        onPress={() => { navigation.navigate('Inscription') }}
+                        style={styles.btnLastOps}
+                    >
+                        <Text style={styles.textLastOps}>Inscription</Text>
+                    </TouchableOpacity>
+                    </View>
+                    <View>
+                    <TouchableOpacity
+                        onPress={() => { navigation.navigate('Login') }}
+                        style={styles.btnLastOps}
+                    >
+                        <Text style={styles.textLastOps}>Connexion</Text>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                </View>
             </View>
-            <View>
-            </View>
-        </View>
+        </ImageBackground>
     )
 }
 
@@ -77,7 +82,6 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     textRegister: {
-        color: 'grey',
         color: 'white',
         fontWeight: 'bold',
         fontSize: 18
@@ -98,14 +102,14 @@ const styles = StyleSheet.create({
     btnLastOps: {
         padding: 10,
 
-        backgroundColor: '#a7dbcf',
+        backgroundColor: '#6dd6db',
         padding: 10,
         width: 200,
         alignItems: 'center',
         borderRadius: 10
     },
     textLastOps: {
-        color: 'white',
+        color: '#449094',
         fontWeight: 'bold',
         fontSize: 18
     },

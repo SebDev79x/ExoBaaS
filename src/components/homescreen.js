@@ -39,8 +39,6 @@ console.log("HOMESCREEN LOGOUT auth.currentUser",user);
 
           });
     }
-    const user = auth.currentUser;
-    console.log("HOMESCREEN en dehors du scope LOGOUT",user);
 
     return (
         <ImageBackground

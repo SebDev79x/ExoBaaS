@@ -12,7 +12,7 @@ const StackNav = () => {
 
   return (
 
-    <Stack.Navigator >
+    <Stack.Navigator  screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Accueil" component={TabNav} />
       <Stack.Screen name="Ajout transaction" component={AddForm} />
       <Stack.Screen name="Modif transaction" component={UpdateForm} />

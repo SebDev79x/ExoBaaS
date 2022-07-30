@@ -56,6 +56,7 @@ const RegisterScreen = ({ navigation }) => {
     const [password2, setPassword2] = useState('')
     const [users, setUsers] = useState('')
     const [loading, setLoading] = useState(false)
+    const [isUserLoggedIn,setIsUserLoggedIn] = useState(false)
     /* useEffect(() => {
         let isMounted = true;
         const unsub = onSnapshot(collection(db, "users"), (querySnapshot) => {
@@ -107,25 +108,27 @@ const RegisterScreen = ({ navigation }) => {
               })
       } */
 
-    const onHandleRegister = async () => {
-        try {
+    const onHandleRegister = async (emailParam, passwordParam) => {
+        console.log('appel fonction onhandleregister');
+        /* try { */
+       
             const auth = getAuth();
-            await createUserWithEmailAndPassword(auth, email, password)
+            await createUserWithEmailAndPassword(auth,emailParam ,passwordParam )
                 // Si le nouveau compte a été créé, l'utilisateur est automatiquement connecté
                 // https://firebase.google.com/docs/auth/web/password-auth
                 .then((e) => {
-                    const user = e.user
-                    console.log(user, "user après THEN");
+
+                    
+                    setIsUserLoggedIn(true)
+                    console.log(e, "user après THEN");
                 })
                 .catch((error) => console.log(error, "REGISTERSCREEN then/catch"))
-        } catch (err) {
+       /*  } catch (err) {
             console.log("REGISTERSCREEN try/catch", err);
-        }
+        } */
     }
     console.log("EN DEHORS DU SUBMIT", email, password);
-    if (email && password !== '') {
-        onHandleRegister()
-    }
+   
 
     /* const getData = async (email,password) =>{
         if(email && password !== ''){
@@ -163,14 +166,15 @@ const RegisterScreen = ({ navigation }) => {
                     validateOnMount={true}
                     onSubmit={(data) => {
 /*                         createUser(data.firstname, data.lastname, data.email, data.password, data.password2)
- */                        setEmail(data.email)
-                        setPassword(data.password)
+ */                      /*   setEmail(data.email)
+                        setPassword(data.password) */
                         setLoading(true)
+                        setEmail(data.email)
+                        setPassword(data.password)
                         console.log("UTILISATEUR data.", data.email, data.password,);
 
-                        console.log("UTILISATEUR after SET", email, password);
 
-
+                        onHandleRegister(data.email,data.password)
 
 /*                     navigation.navigate('Login', { data: [...users, data], dataUser: data })
  *//*                 update_document_transaction({ ...data }, "transactions", id)

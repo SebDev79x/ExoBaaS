@@ -6,6 +6,8 @@ import {total_incomes_or_expenses} from '../functions/calculations';
 import {balance} from '../functions/calculations'
 
 const StatsToDisplay = ({ navigation }) => {
+
+ 
     const collection = "transactions"
     const [transactions, setTransactions] = useState([])
     useEffect(() => {
